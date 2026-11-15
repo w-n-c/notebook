@@ -1,0 +1,3 @@
+# Nothing should be ignored here except local artifacts; the brain is meant
+# to hold real files. Keep this minimal.
+.DS_Store
