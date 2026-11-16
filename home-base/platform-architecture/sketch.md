@@ -133,24 +133,18 @@ Slice 5:         LLM synthesis endpoints
   architecture hygiene, not cost panic.)
 - Secrets management across 3 providers: where does the source of truth live?
 
-## IaC / deploy tooling (re-visited with platform scope)
+## IaC / deploy tooling
 
-Given 3 provider surfaces + multi-language services + scale-to-zero, the
-deploy step is not "upload a folder." It's "provision and update heterogeneous
-infrastructure across Cloudflare, GCP, and a VPS."
+**Open — not yet decided.** The landscape is broader than the Terraform lineage
+and includes at least:
+- Pulumi (TypeScript, Apache 2.0, multi-cloud, imperative)
+- OpenTofu (HCL, MPL 2.0, Linux Foundation, declarative)
+- Terranix (Nix expression → Terraform JSON config)
+- Winglang (cloud-oriented programming language with built-in infra semantics)
+- Nitric (cloud-agnostic application framework, code defines infra)
+- and others not yet researched.
 
-**Recommendation: Pulumi (TypeScript).**
-- Matches your primary language (TypeScript).
-- Multi-provider: Cloudflare, GCP, and any Terraform provider (covers VPS via
-  e.g. the Docker or Command provider).
-- Composes: a Pulumi stack can define a Cloudflare Worker, a Cloud Run service,
-  and a VPS Docker container in one program.
-- State management: free for single user (Pulumi Cloud), or self-hosted (S3/GCS
-  backend).
-- CDKTF is dead. Terraform is BSL/IBM. OpenTofu is viable but HCL-only.
-  Pulumi is the only non-corporate, TS-native, multi-cloud IaC tool standing in
-  2026.
-
-**Fallback: OpenTofu (HCL)** if you prefer declarative config over imperative TS.
-Same providers, community-governed, MPL license. But HCL is a second language to
-maintain alongside your application code.
+Initial research at `.scratch/research/adr-0004-deploy-tooling.md` is incomplete
+(scoped too narrowly to Terraform alternatives). A second research pass is
+needed before this decision can be made. Deferred to a dedicated
+grill-with-docs session.

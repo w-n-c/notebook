@@ -1,9 +1,19 @@
 # Deploy tooling research: vendor-agnostic static site IaC
 
-**Status:** research input for the next decision. Does **not** decide anything.
-**Date:** 2026-11-15
+**Status:** superseded for the IaC landscape by
+`.scratch/research/adr-0004-deploy-tooling-pass-2.md`. This file's
+static-upload notes (rclone, bxSites, wrangler) remain accurate.
+
+**Status (original):** incomplete — scoped too narrowly. Needs a second pass.
+**Date:** 2026-11-15 (initial pass)
 **Context:** ADR 0004 deploy half. The user does not want Wrangler/Cloudflare
 lock-in, is skeptical of Terraform downsides, and wants something vendor-agnostic.
+
+**Caveat:** This initial pass only surveyed the Terraform lineage (Terraform,
+OpenTofu, Pulumi, SST, CDKTF). It missed Terranix, Winglang, Nitric, and other
+tools outside that ecosystem. A second research pass covering the full
+landscape is required before the IaC decision can be made. Do not treat the
+options listed here as exhaustive.
 
 ---
 
