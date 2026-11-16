@@ -22,3 +22,13 @@ desktop with zero backup. The "issue tracker" was a single point of failure
 disguised as a convention. The answer wasn't a better issue tool — it was
 "issues as files, then back up the files." dspinellis/git-issue was already
 pointing at this.
+
+---
+
+A three-cloud architecture spent one afternoon becoming two clouds and a
+dormant third. Not by deleting anything — by actually reading the 2026 docs.
+"What still needs Google Cloud?" turned out to be GPU training and nothing else,
+so the heavy-compute fallback didn't get removed; it got put to sleep, the way a
+container does, billing zero until something asks it to wake. The tool decision
+was easy. The hard part was noticing that the architecture I'd been defending
+was written against a previous year's limits.

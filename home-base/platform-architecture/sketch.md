@@ -1,7 +1,7 @@
 # Platform Architecture Sketch
 
 **Status:** `open` — working sketch, to be deepened per-slice.
-**Date:** 2026-11-15
+**Date:** 2026-11-15 (updated 2026-11-16: Cloudflare ceilings corrected, IaC decided)
 **Context:** Home Base is not a static site. It is a personal platform integrating
 AT Protocol identity, dynamic search/views, data extraction pipelines, AI
 workflows, cross-device sync, smart home, social bridges, and a dev portfolio,
@@ -24,8 +24,8 @@ spanning half a dozen+ languages with an unbounded runtime surface.
    Serverless containers, edge functions, and commodity VPS with suspend
    semantics; no always-warm clusters unless the workload demands it.
 5. **Multi-language by design.** The platform does not prescribe a runtime.
-   Cloudflare catches JS/TS/Wasm workloads; everything else lands on containers
-   (Cloud Run) or commodity VPS.
+   Cloudflare catches JS/TS/Wasm workloads; everything else lands on Cloudflare
+   Containers or a commodity VPS.
 
 ## Provider boundaries (what lands where)
 
@@ -34,34 +34,43 @@ spanning half a dozen+ languages with an unbounded runtime surface.
 | Capability | Service | Limits that matter |
 |---|---|---|
 | Static assets + SSR | Workers + Static Assets, or Pages | JS/TS/Wasm runtimes only |
-| Dynamic compute (JS/TS) | Workers | 30s wall-clock (non-request), 128MB memory |
+| Dynamic compute (JS/TS) | Workers | CPU time 10 ms free / 5 min paid; 128 MB per isolate; HTTP wall-time unlimited, cron/queue 15 min |
+| Any-language compute | Containers (GA 2026) | Any Docker image, full Linux, scale-to-zero, active-CPU pricing |
 | Durable compute (JS/TS) | Durable Objects | Stateful, single-threaded, JS/TS only |
+| Durable orchestration | Workflows | Unlimited wall-time per step, sleep up to 1 yr, 1 GB state |
 | Object storage | R2 | S3-compatible, zero egress |
-| Relational DB (light) | D1 | SQLite at edge, 10GB per database |
+| Relational DB (light) | D1 | SQLite at edge, 10 GB per DB, single-threaded |
+| Relational DB (heavy) | Hyperdrive → external Postgres | Pools + caches an external Postgres/MySQL (VPS, Neon, Supabase) |
 | Queue / event bus | Queues | At-least-once delivery, pull-based consumers |
 | Pub/sub | Workers Pub/Sub (or Queues for fan-out) | |
-| AI inference | Workers AI | Pre-trained models, no fine-tuning |
-| Cron / scheduled | Workers Cron Triggers | |
+| AI inference | Workers AI | Pre-trained + LoRA-adapted serving; no training |
+| Cron / scheduled | Workers Cron Triggers | 15 min wall / 5 min CPU |
 | DNS + CDN | Cloudflare DNS + CDN | The one non-negotiable Cloudflare service |
 
-**Hard ceilings that push a workload to fallback:**
-- Needs a runtime other than JS/TS/Wasm → falls back
-- Needs >30s execution (non-request path) → falls back
-- Needs a real relational database (transactions, joins, extensions) → falls back
-- Needs GPU training or fine-tuning → falls back
-- Needs persistent TCP connections or custom protocols → falls back
+**Hard ceilings that push a workload off Cloudflare:**
+- Needs a relational store beyond D1's 10 GB / single-threaded ceiling → external
+  PostgreSQL (VPS or Neon/Supabase) fronted by Hyperdrive
+- Needs GPU training or full fine-tuning (LoRA *serving* stays on Cloudflare) →
+  GCP or rented GPU — the one real GCP trigger
+- Needs inbound raw TCP / custom protocols (IRC, Matrix, PDS) → VPS
+- Workers CPU/memory limits are *not* a ceiling: Workflows (unlimited wall per
+  step) and Containers (any language, real RAM/CPU) absorb those workloads
 
-### Google Cloud (fallback — the "heavy compute" layer)
+### Google Cloud (dormant — "wake on GPU training")
+
+No current slice needs GCP. The only workload that wakes it is GPU training /
+full fine-tuning (LoRA serving is on Cloudflare). If woken:
 
 | Capability | Service | Why not Cloudflare |
 |---|---|---|
-| General containers (any lang) | Cloud Run | Scale-to-zero, any runtime |
-| Batch / long-running jobs | Cloud Run Jobs | Multi-hour, any runtime |
-| Full PostgreSQL | Cloud SQL or AlloyDB | Transactions, extensions, joins |
-| GPU / ML training | Vertex AI or GCE + GPU | Not edge-inference |
-| Big durable storage | Cloud Storage | Alternative to R2, egress costs apply |
+| GPU / ML training | Vertex AI or GCE + GPU | Not available on Cloudflare |
 
-**Egress guard:** a service on GCP should only talk to Cloudflare via the user
+What used to imply GCP is now covered on Cloudflare: any-language containers and
+long/batch jobs → **Containers** + **Workflows**; full relational → **D1** or
+**Hyperdrive → external Postgres (VPS/Neon)**; LLM inference and fine-tuned
+serving → **Workers AI + LoRA adapters**.
+
+**Egress guard (if GCP is woken):** a service on GCP should only talk to Cloudflare via the user
 (HTTP request/response, not background data pumping). If two services both live
 on GCP, they talk over internal networking (no egress). If a GCP workload needs
 to push data regularly to Cloudflare (R2/D1), the egress cost must be calculated
@@ -104,14 +113,15 @@ Slice 5:         LLM synthesis endpoints
   Search index (D1 or R2 + Workers for query)
   Dynamic Views (Workers rendering Svelte SSR?)
   Static assets, DNS, CDN
-  Workers AI (inference for lightweight LLM tasks)
+  Workers AI (inference + LoRA serving for lightweight LLM tasks)
   Queues (event triggers for ingestion pipelines)
+  Workflows (durable orchestration for Slice 4/5 pipelines)
+  Containers (any-language fallback, replaces Cloud Run)
+  Hyperdrive → external Postgres (if D1 is outgrown)
 
-─────────────── Google Cloud (fallback) ───────────────
-  Cloud Run: LLM synthesis endpoints (Slice 5, long requests)
-  Cloud Run Jobs: agent scrubbing scripts (Slice 4)
-  Cloud SQL: if D1 proves insufficient for search index
-  Vertex AI: if fine-tuning or heavy models needed
+─────────────── Google Cloud (dormant) ───────────────
+  (nothing today; only GPU/fine-tuning training would land here —
+   not in the current slice map)
 
 ─────────────── Self-hosted / VPS ───────────────
   AT Protocol PDS (Tangled knot or standalone)
@@ -125,26 +135,24 @@ Slice 5:         LLM synthesis endpoints
 
 - Can Astro run SSR on Cloudflare Workers, or does it need a container?
 - Orama search index: fits in D1 or needs a dedicated service?
-- Svelte Dynamic Views: compiled to static + hydrated client-side, or SSR on Workers?
+- Dynamic views: prerendered + hydrated for the predictable set; query-time Assembled Views (generate-and-bake cache, promote popular ones) for novel queries, or SSR on Workers?
 - PDS hosting: Tangled knot on a VPS, or a managed PDS provider, or self-built?
 - Egress cost modeling: at what data volume does GCP → Cloudflare egress become
   a meaningful line item? (Answer: probably never at personal scale — R2 egress
   is free, GCP egress for a few GB/month is negligible. The constraint is
   architecture hygiene, not cost panic.)
-- Secrets management across 3 providers: where does the source of truth live?
+- Secrets: resolved in ADR 0004 — sops-nix in repo is the source of truth; provider stores are runtime copies.
 
 ## IaC / deploy tooling
 
-**Open — not yet decided.** The landscape is broader than the Terraform lineage
-and includes at least:
-- Pulumi (TypeScript, Apache 2.0, multi-cloud, imperative)
-- OpenTofu (HCL, MPL 2.0, Linux Foundation, declarative)
-- Terranix (Nix expression → Terraform JSON config)
-- Winglang (cloud-oriented programming language with built-in infra semantics)
-- Nitric (cloud-agnostic application framework, code defines infra)
-- and others not yet researched.
+**Decided (ADR 0004, 2026-11-16): Nix-native.**
+- Cloud seams provisioned with **Terranix → OpenTofu**; state in **R2** (tofu ≥ 1.10 lockfile), encrypted.
+- VPS managed with **NixOS + deploy-rs**, bootstrapped via `nixos-anywhere`.
+- One flake-parts `flake.nix` in `home-base/infra/`; secrets via **sops-nix** (age) in the repo.
+- **Provision/manage from the desktop**; **artifact deploy** (`rclone`, later `wrangler`) in spindle CI.
 
-Initial research at `.scratch/research/adr-0004-deploy-tooling.md` is incomplete
-(scoped too narrowly to Terraform alternatives). A second research pass is
-needed before this decision can be made. Deferred to a dedicated
-grill-with-docs session.
+Rejected: Terraform (BSL 1.1), Pulumi (single vendor, bridged Cloudflare
+provider), SST (Cloudflare-ergonomic but a Pulumi layer with second-class
+GCP/VPS), Wing / Nitric / Encore / Serverless (no Cloudflare or VPS coverage;
+uniform app-runtime abstraction). Research:
+`.scratch/research/adr-0004-deploy-tooling.md` + `-pass-2.md`.
