@@ -32,3 +32,14 @@ so the heavy-compute fallback didn't get removed; it got put to sleep, the way a
 container does, billing zero until something asks it to wake. The tool decision
 was easy. The hard part was noticing that the architecture I'd been defending
 was written against a previous year's limits.
+---
+
+The design system I built is a set of Astro components — every layout primitive
+writes a `data-*` attribute and a virtual stylesheet answers with a token rule.
+Then I dropped an interactive island into the middle of the page, and the
+framework boundary ate it. Svelte can't render an Astro component. So the hero
+re-expresses `Sidebar` and `Stack` in its own scoped CSS, shares the same custom
+properties, and pretends the primitive layer isn't there. The tokens cross the
+boundary; the components don't. A design system is only as portable as its
+weakest framework seam.
+
