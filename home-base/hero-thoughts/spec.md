@@ -1,6 +1,6 @@
 # Specification: HeroThoughts — Interactive Conversational Hero (Slice 2)
 
-**Status**: `open` — ready for implementation
+**Status**: `done` — core (Ticket 01) landed; Tickets 02–03 remain deferred backlog.
 
 ## Problem Statement
 
@@ -65,7 +65,7 @@ The home page is a static text header (role, bio, social links) followed by Feat
 
 | Ticket | Title | Status |
 | --- | --- | --- |
-| 01 | HeroThoughts core (head, swarm, ladder, seed, routes, CTA, nav, responsive) | open |
+| 01 | HeroThoughts core (head, swarm, ladder, seed, routes, CTA, nav, responsive) | done |
 | 02 | HeroThoughts animation pass (pan-in/zoom-out transitions, swarm-coalesce, nav fade/slide) | open (backlog) |
 | 03 | Conversation restore on return-to-chat | open (backlog) |
 

@@ -6,14 +6,14 @@
 
 **Acceptance Criteria:**
 
-- [ ] `src/lib/resolution.ts` is a pure module (no DOM/`node:*`/`astro:content`) exporting `resolvePrompt(prompt, catalog)` → `{ tier, suggestions, voiceLine? }`.
-- [ ] Unit tests cover: Tier 1 direct match → ranked suggestions and no voice line; no match → Tier 2 + "I think I can make that for you…"; Tier 3 branch + "I'm not sure — let me guess…".
-- [ ] `HeroThoughts.svelte` (hydrated `client:load`) renders the head SVG (`role="img"` + accessible name), composes the `src/components/ui/` Combobox and Button adapters (bits-ui) for the always-visible prompt and suggestion list, typed-prompt echo, and a voice-line region.
-- [ ] Idle chips are `music books films projects notes`; music seeds are the four sketch labels; `projects`/`notes` chips navigate to real routes.
-- [ ] `/view/[category].astro` renders "indexed in Slice 3" for music/books/films.
-- [ ] Any page with `?from=chat` shows a return-to-chat CTA (`<a href="/">`); pages without it show none.
-- [ ] Home nav visible-then-hidden on `/` only, reveal on hover + focus-within; other pages keep a fixed nav.
-- [ ] Role/bio/social render below the fold in `main` (home-a11y test relocated, not deleted).
-- [ ] `bun test` + `bun run build` green; `tests/guardrails.test.ts` and axe WCAG AA pass; reduced-motion honored.
+- [x] `src/lib/resolution.ts` is a pure module (no DOM/`node:*`/`astro:content`) exporting `resolvePrompt(prompt, catalog)` → `{ tier, suggestions, voiceLine? }`.
+- [x] Unit tests cover: Tier 1 direct match → ranked suggestions and no voice line; no match → Tier 2 + "I think I can make that for you…"; Tier 3 branch + "I'm not sure — let me guess…".
+- [x] `HeroConversation.svelte` (hydrated `client:load` via the `HeroThoughts.astro` shell) renders the head SVG (`role="img"` + accessible name), composes the `src/components/ui/` Combobox and Button adapters (bits-ui) for the always-visible prompt and suggestion list, typed-prompt echo, and a voice-line region.
+- [x] Idle chips are `music books films projects notes`; music seeds are the four sketch labels; `projects`/`notes` chips navigate to real routes.
+- [x] `/view/[category].astro` renders "indexed in Slice 3" for music/books/films.
+- [x] Any page with `?from=chat` shows a return-to-chat CTA (`<a href="/">`); pages without it show none.
+- [x] Home nav visible-then-hidden on `/` only, reveal on hover + focus-within; other pages keep a fixed nav.
+- [x] Role/bio/social render below the fold in `main` (home-a11y test relocated, not deleted).
+- [x] `bun test` + `bun run build` green; `tests/guardrails.test.ts` and axe WCAG AA pass; reduced-motion honored.
 
-**Status:** `open`
+**Status:** `done`
