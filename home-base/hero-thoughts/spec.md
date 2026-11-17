@@ -19,7 +19,7 @@ The home page is a static text header (role, bio, social links) followed by Feat
 
 ### Visual & interaction
 - Side-profile head, hollow interior, facing the prompt. SVG outline only; chips are HTML (`role="listbox"` overlay), not SVG text. Static idle chips on load; submitted prompt echoes inside the head near the mouth.
-- Prompt input is a real, always-visible `input` (combobox pattern: `combobox`/`listbox`, keyboard navigation, `aria-activedescendant`, live region for results).
+- Prompt is composed from the `src/components/ui/` Combobox and Button adapters (bits-ui): the always-visible prompt + suggestion list render through the Combobox adapter, the submit control through the Button adapter. Keyboard navigation and the live region for results stay.
 - Voice lines (Tiers 2/3) are plain text in a status region, never baked into the SVG.
 - Motion in core uses the existing `duration`/`easing` tokens only; `prefers-reduced-motion` is already neutralized globally in `global.css`.
 
