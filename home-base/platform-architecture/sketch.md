@@ -98,7 +98,7 @@ This layer exists for three reasons:
 
 ```
 Slice 1 (done): static Astro site
-Slice 2 (next):  Brain Hero SVG + speech bubble
+Slice 2 (next):  HeroThoughts — interactive conversational hero (head + prompt + suggestion swarm)
 Slice 3:         Hybrid search (Orama BM25 + vectors)
                  Dynamic Views (Svelte on Astro server)
                  Entity record ingestion (Deezer, GCal, Letterboxd)
@@ -109,7 +109,7 @@ Slice 5:         LLM synthesis endpoints
 
 ─────────────── Cloudflare (default) ───────────────
   Astro server (Workers or Pages Functions)
-  Brain Hero (static SVG, no compute)
+  HeroThoughts (static site + client-side island; no server compute)
   Search index (D1 or R2 + Workers for query)
   Dynamic Views (Workers rendering Svelte SSR?)
   Static assets, DNS, CDN

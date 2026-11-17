@@ -67,7 +67,7 @@ Deliver the baseline public web experience:
 
 ## Out of Scope
 
-- The interactive "Brain Hero" SVG silhouette and speech bubble (deferred to Slice 2).
+- The interactive HeroThoughts hero — the side-profile head silhouette with prompt and suggestion bubbles (deferred to Slice 2).
 - Hybrid vector/BM25 search engine and Orama integration (deferred to Slice 3).
 - ATProto decentralized feed ingestion and live notes sync (deferred to Milestone 2).
 - Obsidian staging and automated agent scrubbing scripts (deferred to Slice 4).
