@@ -12,7 +12,7 @@
 - [ ] The framework-agnostic entry points import no `astro/*`; only `/astro` may.
 - [ ] `astro.config.mjs` composes the package's `layoutTokens()`; site pages/layouts import primitives from `@w-n-c/layout/astro` and data from `@w-n-c/layout`.
 - [ ] `tests/layout-integration.test.ts`, `tests/home-a11y.test.ts`, and `tests/guardrails.test.ts` resolve the library through the workspace package; no test imports `../src/lib/tokens` or `../src/plugins/layout-integration`.
-- [ ] `src/lib/guardrails.ts`'s `isLayoutPrimitive` predicate points at the new package location.
+- [ ] `scripts/lib/guardrails.ts`'s `isLayoutPrimitive` predicate points at the new package location.
 - [ ] `bun test` and `bun run build` green; `scripts/git-guardrails.sh` clean; built routes unchanged.
 
 **Status:** `open`

@@ -19,7 +19,7 @@ This spec executes Candidates 1–3 now and records Candidates 4–5 as deferred
 Deepen the three highest-leverage clusters into single, testable domain modules, and capture the remaining two as backlog:
 
 - **Ticket 01 — Token & Virtual Stylesheet module**: keep the whole token system co-located in `src/lib/tokens.ts` (path unchanged), add one `primitiveDefaults` source of truth, move the CSS-variable naming helpers into the integration, narrow `src/plugins/layout-integration.ts` to a 2-export public interface (`generateCss()`, `layoutTokens()`), and rewrite the test through that interface.
-- **Ticket 02 — Guardrail verification module**: extract a pure `src/lib/guardrails.ts` that evaluates all ADR 0003 rules over an explicit `{ files, diff }` input, then drive it from two thin adapters (pre-commit bash over staged index contents, and `tests/guardrails.test.ts` over in-memory fixtures + the repo tree).
+- **Ticket 02 — Guardrail verification module**: extract a pure `scripts/lib/guardrails.ts` that evaluates all ADR 0003 rules over an explicit `{ files, diff }` input, then drive it from two thin adapters (pre-commit bash over staged index contents, and `tests/guardrails.test.ts` over in-memory fixtures + the repo tree).
 - **Ticket 03 — Content & site metadata module**: consolidate schemas, queries, date formatting, and site metadata into a single `src/lib/content.ts` with an injectable entry seam so every pure behavior is unit-testable in `bun test`; keep `src/content.config.ts` as the thin Astro loader adapter.
 - **Tickets 04–05 — recorded backlog**: built-route/a11y test harness deepening and EntryCard/article-reader UI pattern deepening (including deleting unused `src/assets/*.svg`).
 
@@ -40,7 +40,7 @@ Deepen the three highest-leverage clusters into single, testable domain modules,
 
 ### Candidate 2 / Ticket 02 — Guardrail Verification Module (Option A)
 
-- **New pure module `src/lib/guardrails.ts`.** Public interface:
+- **New pure module `scripts/lib/guardrails.ts`.** Public interface:
   ```ts
   export interface GuardrailFile { path: string; content: string }
   export interface GuardrailViolation { rule: GuardrailRule; path: string; message: string }
@@ -97,4 +97,4 @@ Deepen the three highest-leverage clusters into single, testable domain modules,
 
 - `bun test` and `bun run build` pass with 100% green assertions after each ticket.
 - `scripts/git-guardrails.sh` exits non-zero for a staged violation of any of the seven guardrail rules and zero for the clean tree.
-- All three guest modules remain importable from their existing conventional paths (`src/lib/tokens.ts`, `src/lib/guardrails.ts`, `src/lib/content.ts`); no consumer imports a deleted module.
+- All three guest modules remain importable from their existing conventional paths (`src/lib/tokens.ts`, `scripts/lib/guardrails.ts`, `src/lib/content.ts`); no consumer imports a deleted module.

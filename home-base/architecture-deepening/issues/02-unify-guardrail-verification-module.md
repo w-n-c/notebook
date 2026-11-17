@@ -1,6 +1,6 @@
 # 02: Unify the Guardrail Verification Module
 
-**What to build:** Extract a pure `src/lib/guardrails.ts` verifier that evaluates all ADR 0003 rules (secret scanning + the six architectural invariants) over an explicit `{ files, diff }` input and returns structured violations. Drive it from two thin adapters: the pre-commit bash script (over staged index contents) and `tests/guardrails.test.ts` (in-memory fixtures + repo tree).
+**What to build:** Extract a pure `scripts/lib/guardrails.ts` verifier that evaluates all ADR 0003 rules (secret scanning + the six architectural invariants) over an explicit `{ files, diff }` input and returns structured violations. Drive it from two thin adapters: the pre-commit bash script (over staged index contents) and `tests/guardrails.test.ts` (in-memory fixtures + repo tree).
 
 **Blocked by:** None (can start immediately).
 
@@ -14,7 +14,7 @@
 
 ## Acceptance Criteria
 
-- [x] New pure module `src/lib/guardrails.ts` exposes the whole rule definition and no I/O:
+- [x] New pure module `scripts/lib/guardrails.ts` exposes the whole rule definition and no I/O:
   ```ts
   export interface GuardrailFile { path: string; content: string }
   export interface GuardrailViolation { rule: GuardrailRule; path: string; message: string }

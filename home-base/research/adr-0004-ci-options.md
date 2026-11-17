@@ -14,7 +14,7 @@ From `package.json` + ADR 0003:
 | Tests | `bun test` | single-flight build, then asserts against `dist/` |
 | Build | `bun run build` | `astro build` → `dist/` |
 
-The guardrail engine (`src/lib/guardrails.ts`) is **pure and forge-agnostic**: it takes
+The guardrail engine (`scripts/lib/guardrails.ts`) is **pure and forge-agnostic**: it takes
 `{ files, diff }` and returns violations. `scripts/check-guardrails.ts` is the adapter. So
 *what* runs is already portable; the only open question is *what invokes it*.
 
@@ -94,7 +94,7 @@ Then:
 ## What stays true regardless of forge choice
 
 1. **One `scripts/ci.sh`** running `typecheck && test && build` is the whole gate; every CI or a local timer just calls it.
-2. **`src/lib/guardrails.ts` is already pure** — no adaptation needed to run under any runner.
+2. **`scripts/lib/guardrails.ts` is already pure** — no adaptation needed to run under any runner.
 3. **The Anthropic-ish secret/violation rules are forge-neutral** — they reason over files+diff, not over a forge API.
 4. **Deploy is decoupled from CI** via `wrangler` upload; the CI system need not be the deploy system.
 5. **Issues stay as files** (your current model); no forge issue tracker is required by CI.
