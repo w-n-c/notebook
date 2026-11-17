@@ -1,6 +1,6 @@
 # Specification: Publish `@w-n-c/layout` — Framework-Agnostic Layout Primitive Library
 
-**Status**: `open` — ready for implementation
+**Status**: `in-progress` — ticket 01 (extraction) landed; tickets 02–05 remain
 
 ## Problem Statement
 
@@ -93,7 +93,7 @@ This site becomes the first consumer, so the library cannot drift from real use.
 
 | Ticket | Title | Status |
 | --- | --- | --- |
-| 01 | Workspace scaffold & extract `@w-n-c/layout` (atomic; trunk green) | open |
+| 01 | Workspace scaffold & extract `@w-n-c/layout` (atomic; trunk green) | done |
 | 02 | Split library-owned Base Styles out of `global.css` | open |
 | 03 | Reconcile ADRs + glossary to the new layer homes; write the extraction ADR | open |
 | 04 | Publishing: prepack literal CSS, README, browser-floor doc, publish metadata | open |

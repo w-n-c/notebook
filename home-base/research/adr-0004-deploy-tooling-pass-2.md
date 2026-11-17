@@ -73,7 +73,7 @@ VPS layer.** They are built around a portable app-runtime abstraction (function/
 container + bucket + queue + postgres), which is exactly the abstraction this
 platform *doesn't* want — the whole point of the sketch is that placement
 (Cloudflare vs GCP vs VPS) is per-workload and is the architecture, not an
-incidental. They'd only solve the GCP fallback slice, i.e. the worst-fit corner.
+incidental. They'd only solve the GCP fallback phase, i.e. the worst-fit corner.
 
 **SST is the one exception worth a look** because it has genuinely good
 Cloudflare components (`Worker`, `D1`, `R2`, `Kv`, `Queue`, `Cron`, `Ai`,
