@@ -22,8 +22,8 @@ via the workspace link (dogfooding). The package ships:
 1. **Design Tokens** + the generator (`generateCss`, `viteLayoutTokens`) — the
    `@layer base`/`@layer components` stylesheet.
 2. **The Layout Primitive Contract** — global class + `data-*` rules.
-3. **Preflight** — renderer-independent mechanical resets + neutral typographic
-   defaults.
+3. **Base Styles** — renderer-independent mechanical resets + neutral
+   typographic defaults.
 4. **One neutral default Theme** — a single neutral ramp + a single accent,
    system fonts, fluid type scale — documented "override `:root` to rebrand."
 5. **Optional Astro wrappers** as a convenience subpath export, not the contract.
@@ -53,6 +53,14 @@ This site becomes the first consumer, so the library cannot drift from real use.
   lead-subtitle rule, `theme-light`/`theme-dark` overrides, and anything added
   later.
 
+### Base Styles delivery (settled)
+- The library is **not functional without its Base Styles**: the mechanical
+  resets (`box-sizing`, `border-style: solid 0`, the measure cap) are
+  load-bearing for the Layout Primitive contract. They are therefore part of the
+  **core stylesheet**, not an optional artifact — `generateCss()` emits them
+  into `@layer base` alongside the tokens (one import, Tailwind-style). No
+  separate `base.css` subpath.
+
 ### Theming (settled)
 - Default Theme is the current neutral one (one neutral ramp + one accent,
   system fonts, fluid scale). Rebranding = re-declaring `--space-*`,
@@ -72,14 +80,6 @@ This site becomes the first consumer, so the library cannot drift from real use.
   120; ~91.6% global). `:has()` (Baseline 2023) and `@layer` (Baseline 2022) are
   older. No `prefers-color-scheme` fallback. Documented in the README.
 
-## Open Questions
-
-- **Preflight delivery**: does `generateCss()` emit Preflight into `@layer base`
-  alongside the tokens (one import, Tailwind-style), or does the package expose
-  it as a separate artifact the consumer imports explicitly? Leaning: a separate
-  subpath (`@w-n-c/layout/preflight.css` + a `generatePreflight()`), with the
-  virtual module including it by default — decided in ticket 02.
-
 ## Out of Scope
 
 - Separate repository and npm publish automation beyond `prepack` (revisit at the
@@ -94,7 +94,7 @@ This site becomes the first consumer, so the library cannot drift from real use.
 | Ticket | Title | Status |
 | --- | --- | --- |
 | 01 | Workspace scaffold & extract `@w-n-c/layout` (atomic; trunk green) | open |
-| 02 | Split library-owned Preflight out of `global.css` | open |
+| 02 | Split library-owned Base Styles out of `global.css` | open |
 | 03 | Reconcile ADRs + glossary to the new layer homes; write the extraction ADR | open |
 | 04 | Publishing: prepack literal CSS, README, browser-floor doc, publish metadata | open |
 | 05 | Configurable prefix / rename support (default bare) | open (backlog) |

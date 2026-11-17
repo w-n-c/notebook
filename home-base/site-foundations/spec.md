@@ -67,11 +67,11 @@ Deliver the baseline public web experience:
 
 ## Out of Scope
 
-- The interactive HeroThoughts hero — the side-profile head silhouette with prompt and suggestion bubbles (deferred to Slice 2).
-- Hybrid vector/BM25 search engine and Orama integration (deferred to Slice 3).
+- The interactive HeroThoughts hero — the side-profile head silhouette with prompt and suggestion bubbles (deferred to Phase 2).
+- Hybrid vector/BM25 search engine and Orama integration (deferred to Phase 3).
 - ATProto decentralized feed ingestion and live notes sync (deferred to Milestone 2).
-- Obsidian staging and automated agent scrubbing scripts (deferred to Slice 4).
-- Serverless LLM synthesis endpoints and private notes authentication (deferred to Slice 5).
+- Obsidian staging and automated agent scrubbing scripts (deferred to Phase 4).
+- Serverless LLM synthesis endpoints and private notes authentication (deferred to Phase 5).
 
 ## Further Notes
 

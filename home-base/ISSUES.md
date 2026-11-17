@@ -4,7 +4,7 @@
 
 **22** tickets — 8 open (3 backlog), 14 done.
 
-| Slice | Ticket | Title | Status | Blocked by |
+| Feature | Ticket | Title | Status | Blocked by |
 | --- | --- | --- | --- | --- |
 | architecture-deepening | 01 | Deepen the Design Token & Virtual Stylesheet Module | done | — |
 | architecture-deepening | 02 | Unify the Guardrail Verification Module | done | — |
@@ -20,7 +20,7 @@
 | hero-thoughts | 02 | HeroThoughts Animation Pass (backlog) | open (backlog) | 01 |
 | hero-thoughts | 03 | Conversation Restore on Return-to-Chat (backlog) | open (backlog) | 01 |
 | publish-layout | 01 | Workspace Scaffold & Extract `@w-n-c/layout` | open | — |
-| publish-layout | 02 | Split Library-Owned Preflight Out of `global.css` | open | 01 |
+| publish-layout | 02 | Split Library-Owned Base Styles Out of `global.css` | open | 01 |
 | publish-layout | 03 | Reconcile ADRs + Glossary to the New Layer Homes; Write the Extraction ADR | open | 01 |
 | publish-layout | 04 | Publishing: Prepack Literal CSS, README, Browser-Floor Doc, Publish Metadata | open | 01, 02 |
 | publish-layout | 05 | Configurable Prefix / Rename Support (Default Bare) | open (backlog) | 01 |

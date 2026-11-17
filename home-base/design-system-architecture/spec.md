@@ -4,7 +4,7 @@
 
 ## Problem Statement
 
-While Slice 1 established 10 Every Layout `Layout Primitive`s and the core public routes, two architectural gaps emerged:
+While Phase 1 established 10 Every Layout `Layout Primitive`s and the core public routes, two architectural gaps emerged:
 1. **Bypassed Layout Primitives in Shell & Pages**: `src/layouts/Layout.astro` and `src/styles/global.css` wrote raw flexbox, padding, and margin rules (`body { display: flex; ... }`, `.site-header`, `.site-main`, `.site-footer`, `.note-header`, `.note-body`, `.tag`, `.metric-pill`) instead of composing existing primitives (`Cover`, `Box`, `Stack`).
 2. **Missing Branding Design System & Scattered Ad-Hoc Classes**: Only geometric spacing/measures lived in `src/types/tokens.ts`. Colors, surfaces, font stacks, fluid typography scales, and motion durations/easings had no typed source of truth, leading to 18 bespoke BEM-style classes (`.lead`, `.card-meta`, `.surface-card`, `.category-label`, etc.) in `src/styles/global.css` and duplicated card/header markup across routes.
 

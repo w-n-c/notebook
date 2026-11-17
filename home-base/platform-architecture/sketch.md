@@ -1,6 +1,6 @@
 # Platform Architecture Sketch
 
-**Status:** `open` — working sketch, to be deepened per-slice.
+**Status:** `open` — working sketch, to be deepened per-phase.
 **Date:** 2026-11-15 (updated 2026-11-16: Cloudflare ceilings corrected, IaC decided)
 **Context:** Home Base is not a static site. It is a personal platform integrating
 AT Protocol identity, dynamic search/views, data extraction pipelines, AI
@@ -58,7 +58,7 @@ spanning half a dozen+ languages with an unbounded runtime surface.
 
 ### Google Cloud (dormant — "wake on GPU training")
 
-No current slice needs GCP. The only workload that wakes it is GPU training /
+No current phase needs GCP. The only workload that wakes it is GPU training /
 full fine-tuning (LoRA serving is on Cloudflare). If woken:
 
 | Capability | Service | Why not Cloudflare |
@@ -94,17 +94,17 @@ This layer exists for three reasons:
 3. **Sovereignty:** the PDS, forge, and identity surface should run on
    infrastructure you own, not a corporate cloud.
 
-## Service map (current + planned, by slice)
+## Service map (current + planned, by phase)
 
 ```
-Slice 1 (done): static Astro site
-Slice 2 (next):  HeroThoughts — interactive conversational hero (head + prompt + suggestion swarm)
-Slice 3:         Hybrid search (Orama BM25 + vectors)
+Phase 1 (done): static Astro site
+Phase 2 (next):  HeroThoughts — interactive conversational hero (head + prompt + suggestion swarm)
+Phase 3:         Hybrid search (Orama BM25 + vectors)
                  Dynamic Views (Svelte on Astro server)
                  Entity record ingestion (Deezer, GCal, Letterboxd)
-Slice 4:         Obsidian staging → content pipeline
+Phase 4:         Obsidian staging → content pipeline
                  Agent scrubbing scripts
-Slice 5:         LLM synthesis endpoints
+Phase 5:         LLM synthesis endpoints
                  Private notes authentication
 
 ─────────────── Cloudflare (default) ───────────────
@@ -115,13 +115,13 @@ Slice 5:         LLM synthesis endpoints
   Static assets, DNS, CDN
   Workers AI (inference + LoRA serving for lightweight LLM tasks)
   Queues (event triggers for ingestion pipelines)
-  Workflows (durable orchestration for Slice 4/5 pipelines)
+  Workflows (durable orchestration for Phase 4/5 pipelines)
   Containers (any-language fallback, replaces Cloud Run)
   Hyperdrive → external Postgres (if D1 is outgrown)
 
 ─────────────── Google Cloud (dormant) ───────────────
   (nothing today; only GPU/fine-tuning training would land here —
-   not in the current slice map)
+   not in the current phase map)
 
 ─────────────── Self-hosted / VPS ───────────────
   AT Protocol PDS (Tangled knot or standalone)
@@ -131,7 +131,7 @@ Slice 5:         LLM synthesis endpoints
   Smart home hub
 ```
 
-## Open questions (to resolve per-slice, not now)
+## Open questions (to resolve per-phase, not now)
 
 - Can Astro run SSR on Cloudflare Workers, or does it need a container?
 - Orama search index: fits in D1 or needs a dedicated service?

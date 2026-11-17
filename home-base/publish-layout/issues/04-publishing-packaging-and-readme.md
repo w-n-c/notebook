@@ -2,7 +2,7 @@
 
 **What to build:** Make the package installable outside Vite and self-explanatory. At `prepack`, emit a literal stylesheet from `generateCss()` so non-Vite ecosystems import a real file; write the README; document the browser floor and theming; finalize publish metadata.
 
-**Blocked by:** 01: Workspace Scaffold & Extract `@w-n-c/layout`; 02: Split Library-Owned Preflight.
+**Blocked by:** 01: Workspace Scaffold & Extract `@w-n-c/layout`; 02: Split Library-Owned Base Styles.
 
 **Blocks:** None.
 

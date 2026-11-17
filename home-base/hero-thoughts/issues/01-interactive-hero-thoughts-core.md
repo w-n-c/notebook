@@ -1,6 +1,6 @@
 # 01 — HeroThoughts Core
 
-**What to build:** The interactive conversational hero (Slice 2): hollow side-profile head SVG (outline only), prompt input (accessible combobox), thought swarm, three-tier resolution coordinator, seed catalog, `/view/[category]` placeholder route, `?from=chat` return CTA, home-only nav auto-hide, and below-fold identity strip.
+**What to build:** The interactive conversational hero (Phase 2): hollow side-profile head SVG (outline only), prompt input (accessible combobox), thought swarm, three-tier resolution coordinator, seed catalog, `/view/[category]` placeholder route, `?from=chat` return CTA, home-only nav auto-hide, and below-fold identity strip.
 
 **Blocking Edges:** Blocks #02, #03.
 
@@ -10,7 +10,7 @@
 - [x] Unit tests cover: Tier 1 direct match → ranked suggestions and no voice line; no match → Tier 2 + "I think I can make that for you…"; Tier 3 branch + "I'm not sure — let me guess…".
 - [x] `HeroConversation.svelte` (hydrated `client:load` via the `HeroThoughts.astro` shell) renders the head SVG (`role="img"` + accessible name), composes the `src/components/ui/` Combobox and Button adapters (bits-ui) for the always-visible prompt and suggestion list, typed-prompt echo, and a voice-line region.
 - [x] Idle chips are `music books films projects notes`; music seeds are the four sketch labels; `projects`/`notes` chips navigate to real routes.
-- [x] `/view/[category].astro` renders "indexed in Slice 3" for music/books/films.
+- [x] `/view/[category].astro` renders "indexed in Phase 3" for music/books/films.
 - [x] Any page with `?from=chat` shows a return-to-chat CTA (`<a href="/">`); pages without it show none.
 - [x] Home nav visible-then-hidden on `/` only, reveal on hover + focus-within; other pages keep a fixed nav.
 - [x] Role/bio/social render below the fold in `main` (home-a11y test relocated, not deleted).
