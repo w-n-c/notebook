@@ -60,6 +60,11 @@ applies, and the sugar can ship with the library where every consumer gets it.
 - [x] All 41 `.astro` call sites and the Svelte island compose through the wrappers.
 - [x] The prompt bubble is **nested** — `Box` (surface + padding) wrapping `Sidebar`
   (the two-column arrangement) — rather than stacking two primitives on one element.
+- [x] The Reel's progressive enhancement is restored. `packages/layout/src/reel.ts`
+  exports `syncReelOverflow`, `observeReel`, and `observeReels` framework-
+  agnostically; the generated wrappers wire it per framework (Astro scans the
+  document on `astro:page-load`; Svelte runs an action against the element it
+  renders). Verified in the built output.
 - [x] `svelte-check` is wired into `scripts/ci.sh` and the pre-commit gate with
   `--fail-on-warnings` (Svelte *prunes* selectors it believes are unused, silently
   dropping styling — that must fail). Ticket 09.
@@ -110,13 +115,37 @@ Two findings from the diff:
   to the nesting.
 - **Two ADR writes are pending confirmation** (see below).
 
+## The Reel enhancement returns
+
+Ticket 07 dropped `Reel.astro`'s 37-line overflow observer, leaving
+`.reel[data-overflowing]` a rule nothing could satisfy. It comes back split in two:
+
+- **`packages/layout/src/reel.ts`** — the behaviour, framework-agnostic. Overflow
+  is a *measurement*, so it is the one piece of the contract CSS cannot express.
+  `syncReelOverflow` owns the state machine (toggle `data-overflowing`; add
+  `tabindex="0"` only when overflowing, and never clobber an author's `tabindex`).
+  `observeReel` watches one element's size and children via that element's *own*
+  window; `observeReels` scans a subtree and is idempotent, so repeated
+  `astro:page-load` cannot double-observe.
+- **The wiring** — per framework, in the generator's `ENHANCEMENTS` map, because
+  it is the only genuinely framework-specific part. Astro calls `observeReels()`
+  on load and on `astro:page-load`; Svelte uses an action, so the observer is torn
+  down with the component.
+
+`tests/reel.test.ts` covers the state machine, the idempotence guard, the
+`MutationObserver` re-sync, and the no-window path (a detached document has no
+`defaultView`). `tests/wrappers.test.ts` asserts the wiring is present on the Reel
+in both frameworks **and absent from every other wrapper**, so it cannot leak.
+
+Verified end-to-end by rendering a Reel on a scratch route: the built page inlines
+the observer and emits `addEventListener('astro:page-load', …)`. The scratch route
+was removed.
+
 ## Pending: ADR writes
 
-Per the working agreement, `docs/adr/` is not written without an explicit
-decision. Two amendments are owed:
+Both landed:
 
-1. **ADR 0007** — its "ships no framework components" clause is superseded. The
-   Manifest + Attribute Helper remain the contract; the wrappers are *generated
-   consumers* of it, shipped as optional subpaths.
-2. **ADR 0003** — the Mechanical Quality Gates list should gain `svelte-check`
+1. **`docs/adr/0008-generated-wrappers-ship-with-the-library.md`** — Accepted.
+   ADR 0007's Status now records the amendment.
+2. **ADR 0003** — the Mechanical Quality Gates list gained `bun run check:svelte`
    (with `--fail-on-warnings`) and `bun run wrappers --check`.

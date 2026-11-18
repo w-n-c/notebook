@@ -71,7 +71,7 @@ This site becomes the first consumer, so the library cannot drift from real use.
   on drift. A hand-written wrapper is a copy of the manifest and drifts from it
   (the `Stack` default did); a generated one cannot. The generator ships in the
   library, so a consumer can emit wrappers locally instead of importing the
-  subpaths.
+  subpaths. See ADR 0008.
 - **One Primitive Manifest** (`packages/layout/src/primitives.ts`) declares each
   primitive's class name, `data-*` parameters, value scales, and defaults; the
   Helper's types, the wrappers, the generator's lookups, and the guardrail all
@@ -82,12 +82,19 @@ This site becomes the first consumer, so the library cannot drift from real use.
   single `class` and a later spread's `class` key wins, so it cannot compose two
   primitives on one element; nest instead (`Box` wrapping `Sidebar`). A bare-scoped
   utility such as `data-align` still passes through a wrapper's `...rest`.
+- **A primitive's behaviour lives in the library, framework-agnostic, and is
+  wired per framework.** The Reel is the only primitive with contract state CSS
+  cannot reach — whether a track overflows is a *measurement* — so `src/reel.ts`
+  exports the observer and each wrapper wires it its own way: Astro scans the
+  document on `astro:page-load`, Svelte observes the single element it renders.
+  Composing raw `class` + `data-*` means calling `observeReels()` yourself.
 - **Enforcement**: a `data-attributes` guardrail validates `data-*` names and
   values in `.astro` and `.svelte`; the primitive class vocabulary is permitted
   in layouts and pages.
 - **Verification**: `svelte-check` (with `--fail-on-warnings`) and
   `bun run wrappers --check` join the gate so the contract's checking reaches the
-  islands and the wrappers cannot drift.
+  islands and the wrappers cannot drift. Behaviour that needs script — the Reel's
+  overflow state — is exported framework-agnostically and wired per framework.
 
 ### Theming (settled)
 - Default Theme is the current neutral one (one neutral ramp + one accent,
