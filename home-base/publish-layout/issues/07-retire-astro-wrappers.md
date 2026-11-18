@@ -6,7 +6,7 @@
 
 **Blocks:** —
 
-**Status:** `done`
+**Status:** `done` — but its central decision is **superseded by ticket 10**, which reinstates the wrappers as *generated* artifacts. What survives from 07: the manifest carries the wrappers' JSDoc, `isTemplate` replaced `isLayoutPrimitive`, `primitiveDefaults` and its parity test are gone, and the hand-written wrappers are deleted. What does not survive: "the library ships no components".
 
 ## Acceptance Criteria
 

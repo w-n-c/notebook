@@ -1,6 +1,6 @@
 # Specification: Publish `@w-n-c/layout` — Framework-Agnostic Layout Primitive Library
 
-**Status**: `in-progress` — tickets 01 and 06–07 landed (the package is extracted and the library ships no framework components); tickets 02–05 remain
+**Status**: `in-progress` — tickets 01, 06–07, 09 and 10 landed (the package is extracted, the contract is manifest-driven, and generated wrappers ship for both frameworks); tickets 02–05 remain
 
 ## Problem Statement
 
@@ -62,20 +62,32 @@ This site becomes the first consumer, so the library cannot drift from real use.
   separate `base.css` subpath.
 
 ### Contract composition (settled)
-- **No framework components.** The library ships no `.astro` (or other
-  framework) components; the contract is composed with the typed **Attribute
-  Helper** `layout(primitive, options)` → `{ class, ...dataAttrs }`, checked at
-  the call site in any renderer (ADR 0007).
+- **The contract is `class` + `data-*`**, declared once in the Primitive Manifest
+  and composed either by spreading the typed **Attribute Helper**
+  `layout(primitive, options)` → `{ class, ...dataAttrs }`, or through the
+  **generated wrappers** at `@w-n-c/layout/astro/*` and `@w-n-c/layout/svelte/*`.
+- **The wrappers are generated, never hand-written.** `bun run wrappers` emits one
+  component per primitive per framework from the manifest; `--check` fails the gate
+  on drift. A hand-written wrapper is a copy of the manifest and drifts from it
+  (the `Stack` default did); a generated one cannot. The generator ships in the
+  library, so a consumer can emit wrappers locally instead of importing the
+  subpaths.
 - **One Primitive Manifest** (`packages/layout/src/primitives.ts`) declares each
   primitive's class name, `data-*` parameters, value scales, and defaults; the
-  Helper's types, the generator's lookups, and the guardrail all derive from it.
+  Helper's types, the wrappers, the generator's lookups, and the guardrail all
+  derive from it.
 - **The contract is self-defaulting**: the generator emits the `:not([data-*])`
   fallback for every manifest default (fixing the `Stack` gap).
+- **Two primitives on one element are nested, not stacked.** The Helper returns a
+  single `class` and a later spread's `class` key wins, so it cannot compose two
+  primitives on one element; nest instead (`Box` wrapping `Sidebar`). A bare-scoped
+  utility such as `data-align` still passes through a wrapper's `...rest`.
 - **Enforcement**: a `data-attributes` guardrail validates `data-*` names and
   values in `.astro` and `.svelte`; the primitive class vocabulary is permitted
   in layouts and pages.
-- **Verification**: `svelte-check` joins the gate so the Helper's checking
-  reaches the islands.
+- **Verification**: `svelte-check` (with `--fail-on-warnings`) and
+  `bun run wrappers --check` join the gate so the contract's checking reaches the
+  islands and the wrappers cannot drift.
 
 ### Theming (settled)
 - Default Theme is the current neutral one (one neutral ramp + one accent,
@@ -117,7 +129,8 @@ This site becomes the first consumer, so the library cannot drift from real use.
 | 06 | Primitive Manifest & typed Attribute Helper (`layout()`); generator derives from the manifest | done |
 | 07 | Retire the `.astro` wrappers; migrate consumers to the contract | done |
 | 08 | Guardrail: validate `data-*` against the manifest | open |
-| 09 | Type-check Svelte in the gate (`svelte-check`) | open |
+| 09 | Type-check Svelte in the gate (`svelte-check`) | done (ADR 0003 list pending) |
+| 10 | Generated framework wrappers (Astro + Svelte) | done |
 
 ## Verification
 

@@ -43,3 +43,14 @@ properties, and pretends the primitive layer isn't there. The tokens cross the
 boundary; the components don't. A design system is only as portable as its
 weakest framework seam.
 
+---
+
+Ticket 07 deleted ten layout wrapper components because they kept drifting from
+the source of truth. Ticket 10 generated ten layout wrapper components from the
+source of truth. Same code, same names, same directory — and the difference is
+everything. A hand-written wrapper is a *copy* of the manifest, and copies
+rot: that is how the Stack's default spacing quietly lost its CSS fallback,
+declared in three places and agreeing in none. A generated wrapper is a
+*projection* of the manifest, and projections can't disagree with what they're
+projected from. I spent two commits learning that the question was never
+"components or no components". It was "who wrote the same fact down twice".
