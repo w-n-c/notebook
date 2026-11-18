@@ -1,15 +1,15 @@
 # Specification: Publish `@w-n-c/layout` — Framework-Agnostic Layout Primitive Library
 
-**Status**: `in-progress` — ticket 01 (extraction) landed; tickets 02–05 remain
+**Status**: `in-progress` — tickets 01 and 06–07 landed (the package is extracted and the library ships no framework components); tickets 02–05 remain
 
 ## Problem Statement
 
 ADR 0005 made the Layout Primitive contract framework-agnostic (class + `data-*`,
 structural CSS in the virtual stylesheet), and the design-system spec called the
 result "portable." But "portable" was never turned into a package: the tokens,
-the generator, and the `.astro` wrappers still live inside this site's `src/`,
-`package.json` has no identity, `exports`, or `files`, and the only way to
-consume the CSS is through this Astro app's virtual module. The goal is to
+the generator, and the `.astro` wrappers still lived inside this site's `src/`,
+`package.json` had no identity, `exports`, or `files`, and the only way to
+consume the CSS was through this Astro app's virtual module. The goal is to
 replace Tailwind permanently across many projects, so the layout system must
 become a real, publishable library — with this site as its first consumer.
 
@@ -115,7 +115,7 @@ This site becomes the first consumer, so the library cannot drift from real use.
 | 04 | Publishing: prepack literal CSS, README, browser-floor doc, publish metadata | open |
 | 05 | Configurable prefix / rename support (default bare) | open (backlog) |
 | 06 | Primitive Manifest & typed Attribute Helper (`layout()`); generator derives from the manifest | done |
-| 07 | Retire the `.astro` wrappers; migrate consumers to the contract | open |
+| 07 | Retire the `.astro` wrappers; migrate consumers to the contract | done |
 | 08 | Guardrail: validate `data-*` against the manifest | open |
 | 09 | Type-check Svelte in the gate (`svelte-check`) | open |
 
