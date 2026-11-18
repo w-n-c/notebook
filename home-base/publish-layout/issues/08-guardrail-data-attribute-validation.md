@@ -6,7 +6,30 @@
 
 **Blocks:** —
 
-**Status:** `open`
+**Status:** `open` — **premise has weakened; re-scope before building.** See the note below.
+
+## Premise check (2026-11-18)
+
+This ticket was written when `layout()` was the *only* way to compose the contract and
+had no type checking. Ticket 10's generated wrappers changed that: `.astro` and
+`.svelte` consumers now get typed props, so the typo classes this rule was meant to
+catch are already caught in the editor.
+
+Measured raw composition across `src/` and `packages/` (`.astro` + `.svelte`,
+excluding `layout()` calls): **zero**. Every primitive usage goes through a wrapper or
+the Helper. So today the rule would police nothing in the site, and its
+"admit the primitive class vocabulary to layouts/pages" criterion would only matter
+if someone hand-wrote `class="stack"` — which currently would be *caught* (as a
+non-utility class) rather than admitted.
+
+What survives as genuine value:
+
+- A **future** raw `data-*` composition, which nothing would otherwise check.
+- The library's own wrappers, if the generator ever emits a bad parameter.
+- `class="stak"`-style typos, already half-covered by the existing `utility-class` rule.
+
+It is therefore worth doing for completeness of the contract story, but it is not the
+highest-value remaining work in this feature — publishing is (tickets 02 → 04).
 
 ## Acceptance Criteria
 

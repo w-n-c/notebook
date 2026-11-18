@@ -107,8 +107,11 @@ Two findings from the diff:
   children of bits-ui's `Combobox.Root`, which does not declare them, so they were
   passed as props and landed in its `...restProps`. They are now declared *inside*
   the Root's children. The built DOM is unchanged, so this is type-level only —
-  but it is a latent bug, and it is worth checking against the separate
-  ask-button defect (ticket 09 flagged the possible shared root cause).
+  but it was a latent bug.
+- **The ask-button defect is resolved.** Ticket 09 flagged this as a possible
+  shared root cause; the user confirmed in the browser that the Combobox now
+  works, so no separate fix was needed. The snippet restructuring was the whole
+  story.
 - **`data-prompt-echo` renders `="true"` instead of `=""`** where it is a bare
   prop on a wrapper. `[data-prompt-echo]` matches either; it is a test hook
   (`tests/hero-thoughts.test.ts`), not a style hook. Left alone to keep the diff
