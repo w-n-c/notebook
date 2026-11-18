@@ -26,7 +26,8 @@ via the workspace link (dogfooding). The package ships:
    typographic defaults.
 4. **One neutral default Theme** — a single neutral ramp + a single accent,
    system fonts, fluid type scale — documented "override `:root` to rebrand."
-5. **Optional Astro wrappers** as a convenience subpath export, not the contract.
+5. **No framework components** — a typed **Attribute Helper** (`layout()`) is the
+   typed binding to the contract, spreadable in any renderer (ADR 0007).
 
 This site becomes the first consumer, so the library cannot drift from real use.
 
@@ -34,10 +35,9 @@ This site becomes the first consumer, so the library cannot drift from real use.
 
 ### Package identity (settled)
 - **Name**: `@w-n-c/layout` (scoped, public).
-- **Exports map** (three entry points):
-  - `@w-n-c/layout` → tokens, `generateCss`, `viteLayoutTokens`, token types.
-  - `@w-n-c/layout/astro` → the `.astro` Layout Primitive wrappers (typed sugar
-    over the contract, not the contract).
+- **Exports map** (two entry points):
+  - `@w-n-c/layout` → tokens, the Primitive Manifest, `layout()`, `generateCss`,
+    `viteLayoutTokens`, token types.
   - The CSS: `virtual:layout-tokens.css` (Vite) and a literal
     `@w-n-c/layout/layout-tokens.css` emitted at `prepack`.
 - **Topology**: bun workspace at `packages/layout/`; site consumes via workspace
@@ -60,6 +60,22 @@ This site becomes the first consumer, so the library cannot drift from real use.
   **core stylesheet**, not an optional artifact — `generateCss()` emits them
   into `@layer base` alongside the tokens (one import, Tailwind-style). No
   separate `base.css` subpath.
+
+### Contract composition (settled)
+- **No framework components.** The library ships no `.astro` (or other
+  framework) components; the contract is composed with the typed **Attribute
+  Helper** `layout(primitive, options)` → `{ class, ...dataAttrs }`, checked at
+  the call site in any renderer (ADR 0007).
+- **One Primitive Manifest** (`packages/layout/src/primitives.ts`) declares each
+  primitive's class name, `data-*` parameters, value scales, and defaults; the
+  Helper's types, the generator's lookups, and the guardrail all derive from it.
+- **The contract is self-defaulting**: the generator emits the `:not([data-*])`
+  fallback for every manifest default (fixing the `Stack` gap).
+- **Enforcement**: a `data-attributes` guardrail validates `data-*` names and
+  values in `.astro` and `.svelte`; the primitive class vocabulary is permitted
+  in layouts and pages.
+- **Verification**: `svelte-check` joins the gate so the Helper's checking
+  reaches the islands.
 
 ### Theming (settled)
 - Default Theme is the current neutral one (one neutral ramp + one accent,
@@ -98,6 +114,10 @@ This site becomes the first consumer, so the library cannot drift from real use.
 | 03 | Reconcile ADRs + glossary to the new layer homes; write the extraction ADR | open |
 | 04 | Publishing: prepack literal CSS, README, browser-floor doc, publish metadata | open |
 | 05 | Configurable prefix / rename support (default bare) | open (backlog) |
+| 06 | Primitive Manifest & typed Attribute Helper (`layout()`); generator derives from the manifest | open |
+| 07 | Retire the `.astro` wrappers; migrate consumers to the contract | open |
+| 08 | Guardrail: validate `data-*` against the manifest | open |
+| 09 | Type-check Svelte in the gate (`svelte-check`) | open |
 
 ## Verification
 
@@ -108,5 +128,6 @@ This site becomes the first consumer, so the library cannot drift from real use.
 - The built `dist/**/*.html` routes are byte-equivalent (or visually equivalent)
   to before extraction — the move is a refactor, not a redesign.
 - axe-core WCAG 2.1 AA remains 0 violations.
+- `svelte-check` passes over `.svelte` files (ticket 09).
 - `@w-n-c/layout` has no import of `astro/*` in its framework-agnostic entry
   points (only `@w-n-c/layout/astro` may).
