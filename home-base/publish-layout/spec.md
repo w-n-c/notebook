@@ -114,7 +114,7 @@ This site becomes the first consumer, so the library cannot drift from real use.
 | 03 | Reconcile ADRs + glossary to the new layer homes; write the extraction ADR | open |
 | 04 | Publishing: prepack literal CSS, README, browser-floor doc, publish metadata | open |
 | 05 | Configurable prefix / rename support (default bare) | open (backlog) |
-| 06 | Primitive Manifest & typed Attribute Helper (`layout()`); generator derives from the manifest | open |
+| 06 | Primitive Manifest & typed Attribute Helper (`layout()`); generator derives from the manifest | done |
 | 07 | Retire the `.astro` wrappers; migrate consumers to the contract | open |
 | 08 | Guardrail: validate `data-*` against the manifest | open |
 | 09 | Type-check Svelte in the gate (`svelte-check`) | open |
