@@ -54,3 +54,13 @@ declared in three places and agreeing in none. A generated wrapper is a
 *projection* of the manifest, and projections can't disagree with what they're
 projected from. I spent two commits learning that the question was never
 "components or no components". It was "who wrote the same fact down twice".
+
+---
+
+I moved the library's tests into the library, and then had to stop myself from
+running them from the repo root. From the root they pass. From inside the
+package they fail — because a library test that reads the host site's stylesheet
+resolves the path from the root and finds it, and from the package directory it
+doesn't. Same tests, same code, one of them lying. The working directory isn't a
+convenience; it's the thing that decides whether a dependency is real or just
+invisible. A boundary you can walk across without noticing isn't a boundary.

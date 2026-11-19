@@ -2,11 +2,26 @@
 
 **What to build:** Make the package installable outside Vite and self-explanatory. At `prepack`, emit a literal stylesheet from `generateCss()` so non-Vite ecosystems import a real file; write the README; document the browser floor and theming; finalize publish metadata.
 
-**Blocked by:** 01: Workspace Scaffold & Extract `@w-n-c/layout`; 02: Split Library-Owned Base Styles.
+**Blocked by:** 01: Workspace Scaffold & Extract `@w-n-c/layout`; 02: Split Library-Owned Base Styles (both done).
 
 **Blocks:** None.
 
-**Status:** `open`
+**Status:** `open (backlog)` — **deferred by decision (2026-11-18).** The library stays
+in this repo as a workspace package until there is an actual second consumer. The
+user's words: *"we'll publish the lib once we actually need it somewhere else, so
+until then we can keep it here."* `bgabriel.co` is a finished site and is not that
+consumer.
+
+Nothing in this ticket is blocked by the deferral — the workspace package already
+works for this site. What the deferral *does* mean is that the two things that only
+matter to an outside consumer stay undone, and should stay undone rather than
+half-done:
+
+- `prepack` → literal `dist/layout-tokens.css` (today the `./layout-tokens.css`
+  export points at a `dist/` that does not exist — harmless while nothing imports it).
+- Publish metadata, LICENSE, browser-floor doc, and a consumer-facing README.
+
+Revisit when a second consumer appears.
 
 ## Acceptance Criteria
 

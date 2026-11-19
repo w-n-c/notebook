@@ -1,6 +1,6 @@
 # Specification: Publish `@w-n-c/layout` — Framework-Agnostic Layout Primitive Library
 
-**Status**: `in-progress` — tickets 01, 06–07, 09 and 10 landed (the package is extracted, the contract is manifest-driven, and generated wrappers ship for both frameworks); tickets 02–05 remain
+**Status**: `in-progress` — tickets 01, 02, 03, 06–07, 09, 10 and 11 landed (the package is extracted, Base Styles are split, the docs are reconciled, the contract is manifest-driven, generated wrappers ship for both frameworks, and the library's tests live with the library); tickets 04–05 are deferred (see "Publishing is deferred") and 08 is re-scoped
 
 ## Problem Statement
 
@@ -53,13 +53,34 @@ This site becomes the first consumer, so the library cannot drift from real use.
   lead-subtitle rule, `theme-light`/`theme-dark` overrides, and anything added
   later.
 
-### Base Styles delivery (settled)
+### Base Styles delivery (settled, implemented in ticket 02)
 - The library is **not functional without its Base Styles**: the mechanical
   resets (`box-sizing`, `border-style: solid 0`, the measure cap) are
   load-bearing for the Layout Primitive contract. They are therefore part of the
   **core stylesheet**, not an optional artifact — `generateCss()` emits them
   into `@layer base` alongside the tokens (one import, Tailwind-style). No
   separate `base.css` subpath.
+- The line drawn is **mechanical vs. brand**. The library takes the resets and
+  neutral element defaults; the consumer keeps its taste (this site's lead
+  subtitle and prose rhythm). The library also owns `@layer utilities` — the
+  contract's splitters, measure opt-out, and screen-reader-only helper.
+- `@layer base, components, utilities;` is declared once, by the library, first.
+
+### Publishing is deferred (2026-11-18)
+- The library stays in this repo as a workspace package **until there is an
+  actual second consumer**. `bgabriel.co` is a finished site, not that consumer.
+- So tickets 04 (prepack literal CSS, publish metadata, consumer README) and 05
+  (configurable prefix) stay backlog. Neither blocks this site; both only matter
+  to an outside consumer. Revisit when one appears.
+
+### Tests live with what they test (ticket 11)
+- The library's own behaviour is tested in `packages/layout/tests/`, with the
+  package as the working directory, so a library test that reached back into the
+  site would fail rather than pass by accident.
+- `tests/` asserts only how *this site* uses the library: built-route DOM,
+  content schemas, axe WCAG 2.1 AA, guardrails.
+- The gate runs the two suites as separate steps, because `bun test <arg>` is a
+  substring filter and would otherwise merge them from the root.
 
 ### Contract composition (settled)
 - **The contract is `class` + `data-*`**, declared once in the Primitive Manifest
@@ -129,18 +150,20 @@ This site becomes the first consumer, so the library cannot drift from real use.
 | Ticket | Title | Status |
 | --- | --- | --- |
 | 01 | Workspace scaffold & extract `@w-n-c/layout` (atomic; trunk green) | done |
-| 02 | Split library-owned Base Styles out of `global.css` | open |
-| 03 | Reconcile ADRs + glossary to the new layer homes; write the extraction ADR | open |
-| 04 | Publishing: prepack literal CSS, README, browser-floor doc, publish metadata | open |
+| 02 | Split library-owned Base Styles out of `global.css` | done |
+| 03 | Reconcile ADRs + glossary to the new layer homes; write the extraction ADR | done |
+| 04 | Publishing: prepack literal CSS, README, browser-floor doc, publish metadata | open (backlog — deferred) |
 | 05 | Configurable prefix / rename support (default bare) | open (backlog) |
 | 06 | Primitive Manifest & typed Attribute Helper (`layout()`); generator derives from the manifest | done |
 | 07 | Retire the `.astro` wrappers; migrate consumers to the contract | done |
-| 08 | Guardrail: validate `data-*` against the manifest | open |
-| 09 | Type-check Svelte in the gate (`svelte-check`) | done (ADR 0003 list pending) |
+| 08 | Guardrail: validate `data-*` against the manifest | open — **re-scope first**; the wrappers removed its premise |
+| 09 | Type-check Svelte in the gate (`svelte-check`) | done |
 | 10 | Generated framework wrappers (Astro + Svelte) | done |
+| 11 | Split library tests from site tests | done |
 
 ## Verification
 
+- The library's suite runs from `packages/layout` and the site's from the repo root, as two gate steps (ADR 0009).
 - `bun test` and `bun run build` green after every ticket; `scripts/git-guardrails.sh` clean.
 - `tests/layout-integration.test.ts`, `tests/home-a11y.test.ts`, and
   `tests/guardrails.test.ts` resolve the library through the workspace package,
