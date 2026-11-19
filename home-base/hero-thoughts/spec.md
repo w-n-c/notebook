@@ -1,78 +1,142 @@
-# Specification: HeroThoughts — Interactive Conversational Hero (Phase 2)
+# Specification: HeroThoughts — Warm Thought Stream (Phase 2)
 
-**Status**: `done` — core (Ticket 01) landed; Tickets 02–03 remain deferred backlog.
+**Status**: `in-progress` — core (Ticket 01) landed on the old "conversational
+head" premise; re-scoped after design exploration. Tickets 02–03 are the
+current work. ADR 0010 (Thought Stream, not a conversation or a mind map) and
+ADR 0011 (warm theme) now govern the direction; the earlier voice-line /
+echo / floating-chip language in this file has been replaced.
 
 ## Problem Statement
 
-The home page is a static text header (role, bio, social links) followed by Featured Projects and Recent Notes. ADR 0002 defines the real product — queries resolved into Dynamic, Assembled, and Synthesized views — but there is no entry point to it, and no client-side code exists anywhere in the tree (`astro.config.mjs` has no adapter; the site is static HTML). Phase 2 builds that entry point: **HeroThoughts**, a conversational hero whose hollow, side-profile head holds the visitor's prompt and a floating swarm of suggestions, and which navigates to URL-addressed views. It ships static-only, with honest client-side stubs for the two tiers whose real backends arrive in Phase 3 (Orama) and Phase 5 (the LLM endpoint).
+The home page is a static text header followed by Featured Projects and Recent
+Notes. ADR 0002 defines the real product — queries resolved into Dynamic,
+Assembled, and Synthesized views — but there is no entry point to it, and the
+site ships static-only (no adapter). Phase 2 builds that entry point:
+**HeroThoughts**, a stateless search surface whose prompt settles a drifting
+column of thoughts onto the best-fit views, and which navigates to
+URL-addressed views. It ships static-only, with honest client-side stubs for the
+two tiers whose real backends arrive in Phase 3 (Orama) and Phase 5 (the LLM
+endpoint).
 
 ## Solution
 
-1. **The head.** A side-profile, hollow head silhouette. The SVG draws *only* the outline; every interactive element (prompt bubble, suggestion swarm, voice lines) is real HTML layered over it.
-2. **The swarm.** A prompt (e.g. "music") makes suggestion chips enter and settle into best-fit order inside the head.
-3. **The conversation.** A three-tier resolution ladder, spoken in the head's voice:
-   - **Dynamic View** — direct match → ranked suggestions, no filler line.
-   - **Assembled View** — no direct match → *"I think I can make that for you…"*
-   - **Synthesized View** — assembly won't help → *"I'm not sure — let me guess…"*
+1. **The Silhouette.** A single unbroken, left-facing side-profile stroke — a
+   boundary, never a container. It is `aria-hidden` decoration; nothing
+   interactive lives inside it.
+2. **The Thought Stream.** A vertically drifting column of thoughts and results
+   on the Silhouette's open right side. At rest it drifts slowly through ambient
+   subjects; a prompt settles it onto the best-fit views.
+3. **The conversation (ladder, not chat).** A three-tier resolution ladder,
+   rendered as stream content rather than spoken turns:
+   - **Dynamic View** — a cached, direct match appears as an ordinary stream
+     entry.
+   - **Assembled View** — no cached match, but a plausible plan: a *generated*
+     stream entry carrying a visible "drafted for you" tag (the "build the
+     view?" proposal); persisted once built.
+   - **Synthesized View** — no plan: the Silhouette's speech cue answers beside
+     the mouth, with a "a guess — not from my notes" disclaimer tag.
+   - **Open Question** — a confident miss is handed to the author; the site
+     states this honestly.
+4. **Real navigation + cinematic motion.** Selecting an entry navigates for real
+   to a URL-addressed page; the title→`<h1>` morph and the Silhouette/Stream
+   pan-out and pan-in are native cross-document View Transitions.
 
 ## Implementation Decisions
 
 ### Visual & interaction
-- Side-profile head, hollow interior, facing the prompt. SVG outline only; chips are HTML (`role="listbox"` overlay), not SVG text. Static idle chips on load; submitted prompt echoes inside the head near the mouth.
-- Prompt is composed from the `src/components/ui/` Combobox and Button adapters (bits-ui): the always-visible prompt + suggestion list render through the Combobox adapter, the submit control through the Button adapter. Keyboard navigation and the live region for results stay.
-- Voice lines (Tiers 2/3) are plain text in a status region, never baked into the SVG.
-- Motion in core uses the existing `duration`/`easing` tokens only; `prefers-reduced-motion` is already neutralized globally in `global.css`.
+- Side-by-side composition: prompt (left) · Silhouette (center-left) · Thought
+  Stream (right). The Silhouette faces left, so the Stream is "behind the head"
+  in the open space. No enclosure; no node-link map.
+- The prompt is composed from `src/components/ui/` adapters: the input is the
+  bits-ui `Combobox` adapter and the submit control the bits-ui `Button`
+  adapter, so the island hand-rolls no widget ARIA.
+- The speech cue is plain text in a status region aligned toward the mouth; it
+  is never baked into the SVG.
+- Copy: all entry/label/callout strings live in one module so they can be
+  edited by hand without hunting through markup. Labels are placeholders.
+- Motion uses the `duration`/`easing` tokens; `prefers-reduced-motion` is
+  honoured globally.
+
+### Theme
+- One warm identity, light and dark, resolved by `light-dark()` (ADR 0011). New
+  semantic roles: terracotta (CTA/focus), sage (cached/live), ochre
+  (building/thinking), blueprint border (unbuilt/generated), ink-stroke
+  (Silhouette). No theme toggle.
 
 ### Resolution ladder & coordinator
-- New pure client module `src/lib/resolution.ts`: `resolvePrompt(prompt, catalog)` → `{ tier: 'dynamic' | 'assembled' | 'synthesized', suggestions, voiceLine? }`. No DOM, `node:*`, or `astro:content` imports; unit-testable in `bun test`.
-- The injectable seed catalog lives beside the coordinator (a `catalog` argument). Phase 3 replaces it with the Orama-backed source without touching the UI.
+- Pure client module `src/lib/resolution.ts`: `resolvePrompt(prompt, catalog)` →
+  `{ tier, suggestions, voiceLine? }`. No DOM, `node:*`, or `astro:content`
+  imports; unit-testable in `bun test`.
+- The seed catalog is injectable; Phase 3 replaces it with the Orama-backed
+  source without touching the UI.
+- `src/lib/navigation.ts` owns the URL rules (`?from=chat`, home detection).
 
 ### Static-only boundary
-- No server adapter, no `/api` route in Phase 2. Tiers 2/3 are honest client-side affordances ("wired in Phase 3/5"), not fake network calls. The future endpoint seam is documented in the spec; front-end code will never hold a provider key.
+- No server adapter, no `/api` route in Phase 2. Tiers 2/3 are honest
+  client-side affordances ("wired in Phase 3/5"), not fake network calls. Front-
+  end code never holds a provider key.
 
-### Seed catalog
-- Idle chips (5): `music`, `books`, `films`, `projects`, `notes`.
-- `music` suggestions (from the sketch): *"What I've been listening to", "Most played", "Fav albums", "etc."* — aspirational; selecting navigates to a placeholder.
-- `projects` / `notes`: real entries, navigate to `/projects` / `/notes` (or `/projects/[slug]` / `/notes/[slug]`).
-- `books` / `films`: idle-only now; selecting navigates to `/view/[category]`.
-- Placeholder route `src/pages/view/[category].astro` renders *"indexed in Phase 3."*
+### Navigation, motion & continuity
+- Selecting an entry performs a **real navigation** to a URL-addressed page
+  (RESTful; cacheable/bakeable; no-JS degrades to a plain link). The hero is an
+  entry point, not a persistent chat shell.
+- Any page reached from chat carries `?from=chat` and renders a return CTA;
+  pages without the param don't.
+- **View transitions** (ADR 0010): `@view-transition { navigation: auto }` plus
+  `view-transition-name` — the destination `<h1>` named statically, the clicked
+  stream title named in `pageswap`, and the home hero named so its
+  `::view-transition-old/new(hero)` pan out and back. Browsers without support
+  (Firefox stable until 162) get a plain navigation. Guarded by
+  `prefers-reduced-motion`.
 
-### Navigation & continuity
-- Selecting a suggestion performs a **real navigation** to a URL-addressed page (RESTful; cacheable/bakeable; no-JS degrades to a plain link). The hero is an entry point, not a persistent chat shell.
-- Any page reached from chat carries `?from=chat` and renders a **return-to-chat** CTA linking back to `/`. Pages without the param don't.
-- The pan-into-selection / zoom-out continuity is a **View Transition**, deferred to the animation pass (backlog).
-- Return restores an **idle** hero for now; conversation restore is a separate backlog ticket.
+### Motion vocabulary
+- **Idle drift**: slow (~20px/s) vertical loop; pauses on hover/focus; freezes
+  under reduced-motion.
+- **Settle**: default is a fast, confident snap in place (~250–350ms, spring) —
+  the stream simply becomes the answer. The longer "searching" spin (with
+  vertical motion blur) is reserved for low-confidence queries, and spins only
+  through **real adjacent index entries** — never invented filler titles.
 
 ### Responsive
-- **Wide**: `Sidebar` — prompt bubble left (speech-bubble tail to bottom-left, the off-frame speaker), head right, swarm inside.
-- **Narrow**: collapse to `Stack` — shrunk head on top (mascot, outline + idle chips), prompt bubble below, suggestions render as a normal scrollable list under the input (44px targets, real combobox a11y).
+- **Wide**: three-zone row — prompt | Silhouette | Thought Stream.
+- **Narrow**: collapse to a stack — Shrunk Silhouette as a top rule, prompt
+  below, Stream as a scrollable list (44px targets, real combobox a11y).
+- The Silhouette is the face-line separator at desktop widths; on mobile it
+  shrinks rather than disappears.
 
 ### Nav auto-hide
-- Home-only: nav visible on land, then hidden; reveals on hover **and** keyboard focus-within at the top edge. Never `display:none` (stays in the a11y tree). Functional hide/reveal is core; the fade/slide polish is the animation pass.
+- Home-only: nav visible on land, then hidden; reveals on hover and keyboard
+  focus-within. Never `display:none` (stays in the a11y tree).
 
 ### Identity placement
-- Role/bio/social move **below the fold** as a compact identity strip leading into the Latest/Featured sections. (Home a11y test moves with them; content stays in `main`.)
+- Role/bio/social lead into the Latest/Featured sections below the fold.
 
 ## Out of Scope
 
-- Orama search index, entity ingestion, real Dynamic/Assembled/Synthesized resolution (Phase 3/5).
+- Orama search index, entity ingestion, real three-tier resolution (Phase 3/5).
 - Any serverless endpoint or adapter (`astro.config.mjs` stays adapterless).
-- Cinematic animation: pan-in swarm-coalesce, view-transition zoom, nav fade/slide (animation pass).
-- Conversation state restore on return-to-chat (backlog ticket).
-- A combined "Feeds" page (revisit after the hero lands).
+- Promoting motion to a Design System layer (component-local for now).
+- A combined "Feeds" page.
 
 ## Ticket Map
 
 | Ticket | Title | Status |
 | --- | --- | --- |
 | 01 | HeroThoughts core (head, swarm, ladder, seed, routes, CTA, nav, responsive) | done |
-| 02 | HeroThoughts animation pass (pan-in/zoom-out transitions, swarm-coalesce, nav fade/slide) | open (backlog) |
-| 03 | Conversation restore on return-to-chat | open (backlog) |
+| 02 | Warm design & composition (Silhouette + Thought Stream, theme tokens, callouts) | open |
+| 03 | Motion & cross-document view transitions (drift, settle, pan-in/out) | open |
+
+The former Ticket 03 (conversation restore) is **deleted** — the surface is
+stateless (ADR 0010).
 
 ## Verification
 
-- `bun test` and `bun run build` green; `scripts/git-guardrails.sh` clean.
+- `bun test`, `bun run build`, and `bun run typecheck` green.
 - `src/lib/resolution.ts` unit-tested for all three tiers + ranking.
-- axe-core WCAG 2.1 AA on built routes remains 0 violations; combobox semantics covered by component tests.
-- No inline styles or `<style>`/bespoke classes added to `src/pages/` or `src/layouts/` (ADR 0003 holds).
-- Reduced-motion, keyboard, and touch behavior verified for input, swarm, and nav reveal.
+- axe-core WCAG 2.1 AA on built routes remains 0 violations; combobox semantics
+  covered by component tests.
+- Contrast verified for both color-schemes against ADR 0011's table.
+- No inline styles or `<style>`/bespoke classes in `src/pages/` or
+  `src/layouts/` (ADR 0003 holds).
+- Reduced-motion, keyboard, and touch behavior verified for input, stream, and
+  nav reveal. No-JS: entries are plain links; navigation works without JS.
