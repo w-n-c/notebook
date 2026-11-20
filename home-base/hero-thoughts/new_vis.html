@@ -1,0 +1,2426 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="stark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mind Index — Visual Concept Explorer</title>
+
+  <!-- Google Fonts: Inter, JetBrains Mono (Stark Editorial) + Newsreader, DM Sans (Warm Hand-Crafted) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..600;1,9..40,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* ==========================================================================
+       DESIGN TOKENS — THEME 1: STARK EDITORIAL & THEME 2: WARM HAND-CRAFTED
+       ========================================================================== */
+    :root,
+    [data-theme="stark"] {
+      --bg-page: #FAFAFA;
+      --bg-surface: #FFFFFF;
+      --bg-surface-subtle: #F3F3F3;
+      --bg-header: rgba(250, 250, 250, 0.84);
+      --ink-primary: #0A0A0A;
+      --ink-secondary: #525252;
+      --ink-muted: #737373;
+      --ink-faint: #A3A3A3;
+      --border-hairline: #E5E5E5;
+      --border-strong: #0A0A0A;
+      --accent: #E11D48;
+      --accent-soft: rgba(225, 29, 72, 0.08);
+      --accent-secondary: #0A0A0A;
+      --persisted-bg: #F0FDF4;
+      --persisted-ink: #166534;
+      --persisted-border: #BBF7D0;
+
+      --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --font-speech: 'JetBrains Mono', ui-monospace, monospace;
+
+      --speech-style: normal;
+      --speech-size: 0.78rem;
+      --speech-tracking: 0.01em;
+
+      --title-tracking: -0.03em;
+      --item-weight: 400;
+      --item-hover-weight: 500;
+      --radius-ui: 2px;
+      --radius-pill: 2px;
+      --focus-ring: #0A0A0A;
+
+      --profile-stroke: #0A0A0A;
+      --profile-stroke-width: 1.5;
+      --profile-filter: none;
+      --paper-opacity: 0;
+      --ticks-opacity: 1;
+    }
+
+    [data-theme="warm"] {
+      --bg-page: #F6F1E7;
+      --bg-surface: #FCF9F2;
+      --bg-surface-subtle: #EDE5D6;
+      --bg-header: rgba(246, 241, 231, 0.86);
+      --ink-primary: #241E1A;
+      --ink-secondary: #574C42;
+      --ink-muted: #75685C;
+      --ink-faint: #A49688;
+      --border-hairline: #DFD6C7;
+      --border-strong: #241E1A;
+      --accent: #B84C27;
+      --accent-soft: rgba(184, 76, 39, 0.09);
+      --accent-secondary: #4A6756;
+      --persisted-bg: rgba(74, 103, 86, 0.11);
+      --persisted-ink: #385042;
+      --persisted-border: rgba(74, 103, 86, 0.35);
+
+      --font-display: 'Newsreader', Georgia, serif;
+      --font-ui: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --font-speech: 'Newsreader', Georgia, serif;
+
+      --speech-style: italic;
+      --speech-size: 1.05rem;
+      --speech-tracking: 0em;
+
+      --title-tracking: -0.015em;
+      --item-weight: 400;
+      --item-hover-weight: 500;
+      --radius-ui: 8px;
+      --radius-pill: 999px;
+      --focus-ring: #B84C27;
+
+      --profile-stroke: #241E1A;
+      --profile-stroke-width: 1.75;
+      --profile-filter: url(#ink-pen);
+      --paper-opacity: 1;
+      --ticks-opacity: 0;
+    }
+
+    /* ==========================================================================
+       BASE & ATMOSPHERE
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background-color: var(--bg-page);
+      color: var(--ink-primary);
+      font-family: var(--font-ui);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 420ms ease, color 320ms ease;
+      overflow-x: hidden;
+    }
+
+    /* Accessible Focus Styles */
+    :focus-visible {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 3px;
+      border-radius: var(--radius-ui);
+    }
+
+    /* Theme 2: Archival Paper Grain Overlay */
+    .paper-grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: var(--paper-opacity);
+      transition: opacity 420ms ease;
+      background-image: radial-gradient(circle at 20% 20%, rgba(184, 76, 39, 0.025), transparent 55%),
+                        radial-gradient(circle at 85% 75%, rgba(74, 103, 86, 0.03), transparent 55%);
+    }
+
+    .paper-grain svg {
+      width: 100%;
+      height: 100%;
+      opacity: 0.045;
+      mix-blend-mode: multiply;
+    }
+
+    /* Theme 1: Architectural Registration Ticks */
+    .arch-ticks {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: var(--ticks-opacity);
+      transition: opacity 380ms ease;
+    }
+
+    .arch-tick {
+      position: absolute;
+      width: 13px;
+      height: 13px;
+      opacity: 0.35;
+    }
+
+    .arch-tick::before,
+    .arch-tick::after {
+      content: '';
+      position: absolute;
+      background: var(--ink-faint);
+    }
+
+    .arch-tick::before {
+      top: 6px;
+      left: 0;
+      width: 13px;
+      height: 1px;
+    }
+
+    .arch-tick::after {
+      top: 0;
+      left: 6px;
+      width: 1px;
+      height: 13px;
+    }
+
+    /* ==========================================================================
+       FLOATING CONCEPT HEADER
+       ========================================================================== */
+    .concept-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      background: var(--bg-header);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-hairline);
+      transition: background-color 400ms ease, border-color 400ms ease;
+    }
+
+    .theme-segmented {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-pill);
+      padding: 3px;
+      gap: 2px;
+      transition: background-color 300ms ease, border-color 300ms ease, border-radius 300ms ease;
+    }
+
+    .theme-btn {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.03em;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: transparent;
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all 220ms ease;
+      white-space: nowrap;
+    }
+
+    .theme-btn:hover {
+      color: var(--ink-primary);
+    }
+
+    .theme-btn[aria-pressed="true"] {
+      background: var(--bg-surface);
+      color: var(--ink-primary);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+      font-weight: 500;
+    }
+
+    .quick-chip {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-hairline);
+      background: transparent;
+      color: var(--ink-secondary);
+      cursor: pointer;
+      transition: all 180ms ease;
+      white-space: nowrap;
+    }
+
+    .quick-chip:hover {
+      border-color: var(--border-strong);
+      color: var(--ink-primary);
+      background: var(--bg-surface);
+    }
+
+    .quick-chip.is-active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    /* ==========================================================================
+       HOME STAGE — 3-ZONE HORIZONTAL ARCHITECTURE
+       ========================================================================== */
+    .stage-shell {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 88px clamp(18px, 4vw, 64px) 48px;
+    }
+
+    .home-stage {
+      width: 100%;
+      max-width: 1220px;
+      display: grid;
+      grid-template-columns: minmax(270px, 1.05fr) 150px minmax(320px, 1.35fr);
+      align-items: center;
+      column-gap: clamp(12px, 2.2vw, 32px);
+      will-change: transform, opacity;
+    }
+
+    /* Camera Pan-Out Motion States */
+    .left-anchor {
+      transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1), opacity 420ms ease;
+      will-change: transform, opacity;
+    }
+
+    .profile-anchor {
+      transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1), opacity 400ms ease;
+      will-change: transform, opacity;
+    }
+
+    .mind-column {
+      transition: opacity 320ms ease;
+    }
+
+    .home-stage.is-panned-out .left-anchor {
+      transform: translateX(-140px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .home-stage.is-panned-out .profile-anchor {
+      transform: translateX(-150px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .home-stage.is-panned-out .mind-item:not(.is-flying-source) {
+      opacity: 0 !important;
+      transform: translateX(-36px);
+      transition: opacity 260ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+    }
+
+    .home-stage.is-panned-out .mind-meta-header {
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+
+    .home-stage.is-hidden {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       LEFT COLUMN — THE PROMPT & CONVERSATIONAL MOUTH CUE
+       ========================================================================== */
+    .left-anchor {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 28px;
+      padding-right: 4px;
+    }
+
+    .identity-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    /* Search Input Styling per Theme */
+    .prompt-form {
+      position: relative;
+      width: 100%;
+    }
+
+    .prompt-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      border-bottom: 1.5px solid var(--border-hairline);
+      padding-bottom: 10px;
+      transition: border-color 220ms ease;
+    }
+
+    .prompt-input-wrap:focus-within {
+      border-bottom-color: var(--border-strong);
+    }
+
+    [data-theme="warm"] .prompt-input-wrap {
+      background: rgba(252, 249, 242, 0.65);
+      border: 1px solid var(--border-hairline);
+      border-radius: 10px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 10px rgba(36, 30, 26, 0.03);
+    }
+
+    [data-theme="warm"] .prompt-input-wrap:focus-within {
+      border-color: var(--ink-secondary);
+      background: var(--bg-surface);
+      box-shadow: 0 4px 16px rgba(36, 30, 26, 0.06);
+    }
+
+    .prompt-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: var(--font-display);
+      font-size: clamp(1.08rem, 1.45vw, 1.28rem);
+      color: var(--ink-primary);
+      letter-spacing: var(--title-tracking);
+      padding-right: 68px;
+    }
+
+    .prompt-input::placeholder {
+      color: var(--ink-faint);
+      font-style: normal;
+    }
+
+    [data-theme="warm"] .prompt-input::placeholder {
+      font-style: italic;
+    }
+
+    .prompt-actions {
+      position: absolute;
+      right: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    [data-theme="warm"] .prompt-actions {
+      right: 10px;
+    }
+
+    .prompt-clear-btn {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--ink-muted);
+      background: transparent;
+      border: none;
+      padding: 4px 6px;
+      cursor: pointer;
+      border-radius: var(--radius-ui);
+      transition: color 180ms ease;
+    }
+
+    .prompt-clear-btn:hover {
+      color: var(--ink-primary);
+    }
+
+    .prompt-submit-btn {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--ink-secondary);
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-ui);
+      padding: 4px 8px;
+      cursor: pointer;
+      transition: all 180ms ease;
+    }
+
+    .prompt-submit-btn:hover {
+      background: var(--ink-primary);
+      color: var(--bg-page);
+      border-color: var(--ink-primary);
+    }
+
+    /* Mouth-Aligned Conversational Speech Cue */
+    .speech-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-align: right;
+      min-height: 76px;
+      padding-top: 6px;
+    }
+
+    .speech-row {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      max-width: 100%;
+    }
+
+    .speech-text {
+      font-family: var(--font-speech);
+      font-style: var(--speech-style);
+      font-size: var(--speech-size);
+      letter-spacing: var(--speech-tracking);
+      color: var(--ink-secondary);
+      line-height: 1.45;
+      transition: opacity 220ms ease, color 220ms ease;
+    }
+
+    .speech-text.is-active-status {
+      color: var(--accent);
+    }
+
+    /* Theme-specific pointer SVG next to mouth */
+    .speech-pointer {
+      flex-shrink: 0;
+      width: 34px;
+      height: 16px;
+      overflow: visible;
+    }
+
+    .speech-pointer .stark-pointer {
+      display: block;
+      stroke: var(--ink-faint);
+    }
+
+    .speech-pointer .warm-pointer {
+      display: none;
+      stroke: var(--ink-muted);
+    }
+
+    [data-theme="warm"] .speech-pointer .stark-pointer {
+      display: none;
+    }
+
+    [data-theme="warm"] .speech-pointer .warm-pointer {
+      display: block;
+    }
+
+    /* LLM Conversational Answer Panel (inside speech area for low-confidence queries) */
+    .llm-fallback-panel {
+      margin-top: 14px;
+      max-width: 340px;
+      text-align: left;
+      padding: 14px 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-ui);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 320ms ease, transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    [data-theme="stark"] .llm-fallback-panel {
+      border-left: 2px solid var(--accent);
+    }
+
+    [data-theme="warm"] .llm-fallback-panel {
+      border-radius: 10px;
+      border-color: var(--border-hairline);
+      box-shadow: 0 8px 26px rgba(36, 30, 26, 0.06);
+    }
+
+    .llm-fallback-panel.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .llm-answer-copy {
+      font-family: var(--font-ui);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: var(--ink-primary);
+      margin: 0 0 12px 0;
+    }
+
+    [data-theme="warm"] .llm-answer-copy {
+      font-family: var(--font-display);
+      font-size: 0.96rem;
+    }
+
+    .ping-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.02em;
+      padding: 7px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-strong);
+      background: transparent;
+      color: var(--ink-primary);
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+
+    .ping-btn:hover:not(:disabled) {
+      background: var(--ink-primary);
+      color: var(--bg-page);
+    }
+
+    .ping-btn.is-sent {
+      border-color: var(--persisted-border);
+      background: var(--persisted-bg);
+      color: var(--persisted-ink);
+      cursor: default;
+    }
+
+    /* ==========================================================================
+       CENTER-LEFT ANCHOR — MINIMALIST SINGLE-STROKE FACE PROFILE
+       ========================================================================== */
+    .profile-anchor {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      user-select: none;
+    }
+
+    .profile-svg {
+      width: 146px;
+      height: 356px;
+      overflow: visible;
+    }
+
+    .profile-stroke-path {
+      fill: none;
+      stroke: var(--profile-stroke);
+      stroke-width: var(--profile-stroke-width);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: var(--profile-filter);
+      transition: stroke 320ms ease, stroke-width 320ms ease;
+    }
+
+    /* Subtle breathing pulse only when actively thinking/searching */
+    .profile-anchor.is-thinking .profile-stroke-path {
+      stroke: var(--ink-primary);
+    }
+
+    /* ==========================================================================
+       RIGHT HALF — THE OPEN MIND (SOFTLY MASKED TYPOGRAPHIC DRUM)
+       ========================================================================== */
+    .mind-column {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .mind-meta-header {
+      font-family: var(--font-mono);
+      font-size: 0.67rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 6px;
+      padding-left: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 20px;
+      transition: opacity 240ms ease;
+    }
+
+    .drum-viewport {
+      position: relative;
+      height: min(64vh, 470px);
+      min-height: 340px;
+      overflow: hidden;
+      /* Soft alpha fade at top and bottom edges */
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 0, 0, 0.55) 11%,
+        #000 22%,
+        #000 78%,
+        rgba(0, 0, 0, 0.55) 89%,
+        transparent 100%
+      );
+      mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 0, 0, 0.55) 11%,
+        #000 22%,
+        #000 78%,
+        rgba(0, 0, 0, 0.55) 89%,
+        transparent 100%
+      );
+    }
+
+    .drum-track {
+      position: relative;
+      width: 100%;
+      will-change: transform, filter;
+      padding: 6px 6px 6px 6px;
+    }
+
+    .drum-track.is-spinning {
+      filter: url(#vertical-motion-blur);
+    }
+
+    /* Individual Mind Items */
+    .mind-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-ui);
+      padding: 13px 16px;
+      margin: 4px 0;
+      cursor: pointer;
+      position: relative;
+      color: var(--ink-primary);
+      transition:
+        transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 220ms ease,
+        border-color 220ms ease,
+        opacity 240ms ease;
+    }
+
+    .mind-item:hover,
+    .mind-item:focus-visible {
+      transform: translateX(6px);
+      background: var(--bg-surface);
+      border-color: var(--border-hairline);
+    }
+
+    .mind-item-row {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      width: 100%;
+    }
+
+    .mind-item-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.22rem, 1.95vw, 1.65rem);
+      font-weight: var(--item-weight);
+      letter-spacing: var(--title-tracking);
+      line-height: 1.24;
+      color: var(--ink-primary);
+      transition: color 200ms ease;
+    }
+
+    [data-theme="warm"] .mind-item:hover .mind-item-title {
+      color: var(--accent);
+    }
+
+    .mind-item-meta {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.02em;
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mind-item-arrow {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--ink-faint);
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity 200ms ease, transform 200ms ease, color 200ms ease;
+    }
+
+    .mind-item:hover .mind-item-arrow,
+    .mind-item:focus-visible .mind-item-arrow {
+      opacity: 1;
+      transform: translateX(0);
+      color: var(--ink-primary);
+    }
+
+    /* Generative SSR Blueprint Item */
+    .mind-item.is-generative {
+      border: 1px dashed var(--accent);
+      background: var(--accent-soft);
+      padding: 15px 18px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+
+    [data-theme="warm"] .mind-item.is-generative {
+      border-radius: 10px;
+      background: rgba(184, 76, 39, 0.055);
+      border-color: rgba(184, 76, 39, 0.55);
+    }
+
+    .mind-item.is-generative:hover,
+    .mind-item.is-generative:focus-visible {
+      border-color: var(--accent);
+      background: var(--bg-surface);
+    }
+
+    .ssr-tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      padding: 2px 7px;
+      border: 1px dashed var(--accent);
+      border-radius: var(--radius-pill);
+      white-space: nowrap;
+      line-height: 1.4;
+    }
+
+    [data-theme="warm"] .ssr-tag {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 0.78rem;
+      letter-spacing: 0.01em;
+      border-style: dashed;
+      padding: 1px 10px;
+    }
+
+    .persisted-tag {
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.04em;
+      color: var(--persisted-ink);
+      background: var(--persisted-bg);
+      border: 1px solid var(--persisted-border);
+      border-radius: var(--radius-pill);
+      padding: 2px 8px;
+      white-space: nowrap;
+    }
+
+    /* Live-Build Shimmer Effect for SSR Generation */
+    .mind-item.is-building {
+      pointer-events: none;
+      border-style: solid;
+      border-color: var(--accent);
+    }
+
+    .mind-item.is-building::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        transparent 20%,
+        rgba(225, 29, 72, 0.14) 48%,
+        rgba(225, 29, 72, 0.22) 52%,
+        transparent 80%
+      );
+      transform: translateX(-100%);
+      animation: ssr-shimmer 780ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    [data-theme="warm"] .mind-item.is-building::after {
+      background: linear-gradient(
+        105deg,
+        transparent 20%,
+        rgba(184, 76, 39, 0.14) 48%,
+        rgba(184, 76, 39, 0.24) 52%,
+        transparent 80%
+      );
+    }
+
+    @keyframes ssr-shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(110%); }
+    }
+
+    /* Dimmed tangential items during LLM fallback */
+    .mind-item.is-tangential .mind-item-title {
+      color: var(--ink-secondary);
+      font-size: clamp(1.06rem, 1.5vw, 1.32rem);
+    }
+
+    .mind-item.is-tangential:hover .mind-item-title {
+      color: var(--ink-primary);
+    }
+
+    /* ==========================================================================
+       EXPANDED VIEW LAYER — CAMERA PAN-IN DESTINATION
+       ========================================================================== */
+    .view-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      overflow-y: auto;
+      padding: 96px clamp(20px, 5vw, 72px) 84px;
+      display: none;
+      background: transparent;
+    }
+
+    .view-layer.is-open {
+      display: block;
+    }
+
+    .view-inner {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .view-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      letter-spacing: 0.03em;
+      color: var(--ink-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-pill);
+      padding: 8px 14px;
+      cursor: pointer;
+      margin-bottom: 32px;
+      transition: all 200ms ease;
+    }
+
+    .view-back-btn:hover {
+      color: var(--ink-primary);
+      border-color: var(--border-strong);
+      transform: translateX(-2px);
+    }
+
+    .view-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.1rem, 4.4vw, 3.35rem);
+      font-weight: 400;
+      letter-spacing: var(--title-tracking);
+      line-height: 1.1;
+      color: var(--ink-primary);
+      margin: 0 0 18px 0;
+    }
+
+    [data-theme="warm"] .view-title {
+      font-weight: 400;
+    }
+
+    .view-meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 10px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .meta-pill {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--ink-secondary);
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-pill);
+      padding: 4px 10px;
+    }
+
+    .meta-pill.is-persisted {
+      background: var(--persisted-bg);
+      color: var(--persisted-ink);
+      border-color: var(--persisted-border);
+    }
+
+    .meta-pill.is-accent {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .view-body-animate {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 340ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .view-layer.is-content-visible .view-body-animate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .view-layer.is-closing .view-body-animate {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 150ms ease, transform 150ms ease;
+    }
+
+    .view-lead {
+      font-family: var(--font-ui);
+      font-size: 1.02rem;
+      line-height: 1.65;
+      color: var(--ink-secondary);
+      margin: 0 0 30px 0;
+      max-width: 65ch;
+    }
+
+    [data-theme="warm"] .view-lead {
+      font-family: var(--font-display);
+      font-size: 1.18rem;
+      font-style: italic;
+    }
+
+    /* Editorial Data List inside Views */
+    .record-list {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid var(--border-hairline);
+    }
+
+    .record-row {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      gap: 14px;
+      align-items: baseline;
+      padding: 18px 6px;
+      border-bottom: 1px solid var(--border-hairline);
+      transition: background-color 180ms ease;
+    }
+
+    .record-row:hover {
+      background: var(--bg-surface);
+    }
+
+    .record-idx {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--ink-faint);
+    }
+
+    .record-primary {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      color: var(--ink-primary);
+      letter-spacing: var(--title-tracking);
+      margin-bottom: 3px;
+    }
+
+    .record-sub {
+      font-size: 0.85rem;
+      color: var(--ink-secondary);
+      line-height: 1.5;
+    }
+
+    .record-stat {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--ink-muted);
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    /* Shared-Element FLIP Flying Title */
+    .flying-title {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 60;
+      margin: 0;
+      pointer-events: none;
+      transform-origin: top left;
+      font-family: var(--font-display);
+      font-weight: 400;
+      letter-spacing: var(--title-tracking);
+      line-height: 1.1;
+      color: var(--ink-primary);
+      will-change: transform;
+      white-space: nowrap;
+    }
+
+    /* ==========================================================================
+       RESPONSIVE COLLAPSE (TABLET & MOBILE)
+       ========================================================================== */
+    @media (max-width: 900px) {
+      .stage-shell {
+        padding: 112px 20px 44px;
+        align-items: flex-start;
+      }
+
+      .home-stage {
+        grid-template-columns: 1fr;
+        row-gap: 16px;
+      }
+
+      .left-anchor {
+        gap: 16px;
+        padding-right: 0;
+      }
+
+      .speech-zone {
+        align-items: flex-start;
+        text-align: left;
+        min-height: 0;
+        padding-top: 0;
+      }
+
+      .speech-row {
+        flex-direction: row-reverse;
+        justify-content: flex-start;
+      }
+
+      .speech-pointer {
+        transform: scaleX(-1);
+      }
+
+      .profile-anchor {
+        justify-content: flex-start;
+        padding: 4px 0 4px 12px;
+        border-bottom: 1px solid var(--border-hairline);
+        padding-bottom: 14px;
+      }
+
+      .profile-svg {
+        width: 68px;
+        height: 148px;
+      }
+
+      .drum-viewport {
+        height: 360px;
+        min-height: 300px;
+      }
+
+      .record-row {
+        grid-template-columns: 28px 1fr;
+      }
+
+      .record-stat {
+        grid-column: 2;
+        text-align: left;
+        margin-top: 2px;
+      }
+    }
+
+    /* ==========================================================================
+       REDUCED MOTION SUPPORT
+       ========================================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.12s !important;
+      }
+
+      .drum-track.is-spinning {
+        filter: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hidden SVG Filter Definitions (Directional Motion Blur + Warm Ink Paper Texture) -->
+  <svg width="0" height="0" style="position:absolute;pointer-events:none;" aria-hidden="true">
+    <defs>
+      <!-- True directional vertical blur for slot-machine reel spin -->
+      <filter id="vertical-motion-blur" x="-10%" y="-25%" width="120%" height="150%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="0 4.5" />
+      </filter>
+
+      <!-- Subtle fountain-pen ink organic edge for Warm Hand-Crafted profile -->
+      <filter id="ink-pen" x="-8%" y="-8%" width="116%" height="116%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" seed="7" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.45" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+
+      <!-- Archival cotton paper grain filter -->
+      <filter id="cotton-paper-noise">
+        <feTurbulence type="fractalNoise" baseFrequency="0.82" numOctaves="4" stitchTiles="stitch" />
+        <feColorMatrix type="saturate" values="0" />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- Theme 2 Paper Grain Layer -->
+  <div class="paper-grain" aria-hidden="true">
+    <svg preserveAspectRatio="none">
+      <rect width="100%" height="100%" filter="url(#cotton-paper-noise)" />
+    </svg>
+  </div>
+
+  <!-- Theme 1 Architectural Registration Ticks -->
+  <div class="arch-ticks" aria-hidden="true">
+    <span class="arch-tick" style="top: 76px; left: 24px;"></span>
+    <span class="arch-tick" style="top: 76px; right: 24px;"></span>
+    <span class="arch-tick" style="bottom: 24px; left: 24px;"></span>
+    <span class="arch-tick" style="bottom: 24px; right: 24px;"></span>
+  </div>
+
+  <!-- Minimal Floating Header Bar -->
+  <header class="concept-header">
+    <div class="max-w-[1280px] mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <!-- Theme Switcher -->
+      <div class="flex items-center gap-3">
+        <div class="theme-segmented" role="group" aria-label="Visual direction selector">
+          <button
+            type="button"
+            id="btn-theme-stark"
+            class="theme-btn"
+            aria-pressed="true"
+          >
+            01 · Stark Editorial
+          </button>
+          <button
+            type="button"
+            id="btn-theme-warm"
+            class="theme-btn"
+            aria-pressed="false"
+          >
+            02 · Warm Hand-Crafted
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick-Test State Chips -->
+      <div class="flex items-center gap-2 flex-wrap" aria-label="Quick test queries">
+        <span class="text-[11px] font-mono hidden md:inline" style="color: var(--ink-faint);">
+          TRY:
+        </span>
+        <button type="button" class="quick-chip" data-query="music">music</button>
+        <button type="button" class="quick-chip" data-query="top metal albums">top metal albums</button>
+        <button type="button" class="quick-chip" data-query="favorite pokemon">favorite pokemon</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Home Stage -->
+  <main class="stage-shell">
+    <section id="home-stage" class="home-stage" aria-label="Interactive personal mind search">
+      <!-- LEFT COLUMN: The Prompt + Conversational Mouth Cue -->
+      <div class="left-anchor">
+        <div class="identity-kicker">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span>SR. AI &amp; CLOUD ENGINEER · PUBLIC INDEX</span>
+        </div>
+
+        <form id="prompt-form" class="prompt-form" autocomplete="off">
+          <label for="prompt-input" class="sr-only">Search notes, feeds, or ask anything</label>
+          <div class="prompt-input-wrap">
+            <input
+              id="prompt-input"
+              type="text"
+              class="prompt-input"
+              placeholder="Search notes, feeds, or ask anything..."
+              spellcheck="false"
+            />
+            <div class="prompt-actions">
+              <button
+                type="button"
+                id="prompt-clear"
+                class="prompt-clear-btn hidden"
+                aria-label="Clear search"
+              >
+                clear
+              </button>
+              <button
+                type="submit"
+                class="prompt-submit-btn"
+                aria-label="Submit search"
+                title="Search (Enter)"
+              >
+                ↵
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Mouth-Aligned Single Speech Cue + Optional Low-Confidence LLM Response -->
+        <div class="speech-zone">
+          <div class="speech-row">
+            <p
+              id="speech-status"
+              class="speech-text"
+              role="status"
+              aria-live="polite"
+            >
+              Ask away
+            </p>
+            <!-- Theme-adaptive pointer leading directly toward the lips -->
+            <svg class="speech-pointer" viewBox="0 0 36 16" aria-hidden="true">
+              <!-- Stark Editorial: crisp architectural hairline with endpoint tick -->
+              <g class="stark-pointer" fill="none" stroke-width="1.1">
+                <line x1="0" y1="8" x2="31" y2="8" />
+                <circle cx="33" cy="8" r="1.5" fill="currentColor" stroke="none" />
+              </g>
+              <!-- Warm Hand-Crafted: gentle organic fountain-pen ink flick -->
+              <g class="warm-pointer" fill="none" stroke-width="1.3" stroke-linecap="round">
+                <path d="M 1 9.5 Q 16 11 33 6.5" />
+              </g>
+            </svg>
+          </div>
+
+          <!-- Low-Confidence LLM Conversational Fallback Container -->
+          <div id="llm-fallback-slot" class="w-full flex justify-start md:justify-end"></div>
+        </div>
+      </div>
+
+      <!-- CENTER-LEFT ANCHOR: Minimalist Single-Stroke Side Profile (Facing LEFT, Open Mind to the RIGHT) -->
+      <div id="profile-anchor" class="profile-anchor" aria-hidden="true">
+        <svg class="profile-svg" viewBox="0 0 146 340" xmlns="http://www.w3.org/2000/svg">
+          <!--
+            Single unbroken contour line:
+            Forehead -> Brow ridge -> Nasal bridge -> Nose tip -> Philtrum ->
+            Upper lip -> Mouth parting -> Lower lip -> Chin -> Jawline -> Neck.
+            Back of head is completely open toward the right-hand thought drum.
+          -->
+          <path
+            class="profile-stroke-path"
+            d="
+              M 122 28
+              C 96 25, 73 35, 64 56
+              C 57 72, 58 87, 61 99
+              C 62 105, 60 110, 56 116
+              C 49 128, 41 140, 38 148
+              C 36 153, 40 157, 47 157
+              C 53 157, 56 159, 57 164
+              C 57 170, 54 174, 49 178
+              C 46 180, 48 184, 55 185
+              C 49 187, 47 192, 51 197
+              C 55 201, 57 205, 54 210
+              C 49 218, 52 228, 63 232
+              C 75 236, 88 238, 96 247
+              C 103 255, 104 276, 102 314
+            "
+          />
+        </svg>
+      </div>
+
+      <!-- RIGHT HALF: The Open Mind (Softly Masked Vertical Typographic Drum) -->
+      <div class="mind-column">
+        <div class="mind-meta-header">
+          <span id="mind-context-label">OPEN INDEX · LIVE DRIFT</span>
+          <span id="mind-count-label">7 STREAMS</span>
+        </div>
+
+        <div
+          id="drum-viewport"
+          class="drum-viewport"
+          role="region"
+          aria-label="Thoughts and search results"
+        >
+          <div id="drum-track" class="drum-track"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Expanded View Layer (Camera Pan-In Target) -->
+  <article
+    id="view-layer"
+    class="view-layer"
+    aria-hidden="true"
+    aria-labelledby="view-title"
+  >
+    <div class="view-inner">
+      <button type="button" id="view-back-btn" class="view-back-btn view-body-animate">
+        <span aria-hidden="true">←</span>
+        <span>Return to search</span>
+        <span class="opacity-50 hidden sm:inline ml-1">[esc]</span>
+      </button>
+
+      <h1 id="view-title" class="view-title"></h1>
+
+      <div id="view-meta-bar" class="view-meta-bar view-body-animate"></div>
+
+      <div id="view-body" class="view-body-animate"></div>
+    </div>
+  </article>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* ========================================================================
+         1. RICH CONTENT CORPUS (FEEDS, NOTES, CACHED VIEWS & DYNAMIC SSR DATA)
+         ======================================================================== */
+      const VIEWS_DB = {
+        'favorite-albums': {
+          id: 'favorite-albums',
+          title: 'Favorite Albums',
+          source: 'at://music.feed',
+          statusLabel: 'Cached · Curated',
+          lead: 'All-time heavy rotation across genres—indexed from public ATProto listening records and pinned personal notes.',
+          pills: ['at://music.feed', 'Cached view', 'Last synced 2h ago'],
+          records: [
+            { title: 'In Rainbows', sub: 'Radiohead · 2007 — Art rock perfection; zero filler, extraordinary dynamic range.', stat: '412 plays' },
+            { title: 'Lateralus', sub: 'Tool · 2001 — Fibonacci polyrhythms and sculptural production that still anchors deep-work sessions.', stat: '318 plays' },
+            { title: 'In a Silent Way', sub: 'Miles Davis · 1969 — Studio tape-splicing as composition; endlessly calm late-night architecture music.', stat: '264 plays' },
+            { title: 'Music Has the Right to Children', sub: 'Boards of Canada · 1998 — Analog warmth, degraded tape nostalgia, haunting restraint.', stat: '239 plays' },
+            { title: 'Vespertine', sub: 'Björk · 2001 — Microbeats, harp, and winter intimacy.', stat: '191 plays' }
+          ]
+        },
+
+        'most-played': {
+          id: 'most-played',
+          title: 'Most Played',
+          source: 'at://scrobble.log',
+          statusLabel: 'Live · 90-day window',
+          lead: 'Automated play-count rollup pulled every 15 minutes from the ATProto scrobble stream.',
+          pills: ['at://scrobble.log', 'Rolling 90d', '1,842 total plays'],
+          records: [
+            { title: 'From Mars to Sirius', sub: 'Gojira — Heavy coding sprint staple; especially "Flying Whales" and "Ocean Planet".', stat: '84 plays' },
+            { title: 'Untrue', sub: 'Burial — Rainy evening debugging soundtrack.', stat: '71 plays' },
+            { title: 'Selected Ambient Works 85–92', sub: 'Aphex Twin — Clean focus loop during infrastructure reviews.', stat: '66 plays' },
+            { title: 'Sunbather', sub: 'Deafheaven — Shoegaze wall-of-sound catharsis.', stat: '59 plays' },
+            { title: 'Promises', sub: 'Floating Points, Pharoah Sanders & LSO — Single continuous 46-minute movement.', stat: '52 plays' }
+          ]
+        },
+
+        'what-im-listening-to': {
+          id: 'what-im-listening-to',
+          title: "What I'm Listening To",
+          source: 'at://now.playing',
+          statusLabel: 'Synced · 14m ago',
+          lead: 'Live listening telemetry—tracks played across desktop and mobile, streamed directly to the personal firehose.',
+          pills: ['at://now.playing', 'Live stream', 'Active today'],
+          records: [
+            { title: 'Reckoner — Radiohead', sub: 'In Rainbows · Played 14 minutes ago', stat: 'LIVE' },
+            { title: 'The Art of Dying — Gojira', sub: 'The Way of All Flesh · Played 42 minutes ago', stat: '42m ago' },
+            { title: 'Windowpane — Opeth', sub: 'Damnation · Played 2 hours ago', stat: '2h ago' },
+            { title: 'Dayvan Cowboy — Boards of Canada', sub: 'The Campfire Headphase · Played 3 hours ago', stat: '3h ago' }
+          ]
+        },
+
+        'listening-log-2026': {
+          id: 'listening-log-2026',
+          title: '2026 Listening Log',
+          source: 'notes/music',
+          statusLabel: '64 journal entries',
+          lead: 'Chronological field notes on records discovered, revisited, and retired throughout 2026.',
+          pills: ['notes/music', 'Dense-Sparse indexed', '64 entries'],
+          records: [
+            { title: 'Nov 14 · Revisited Alcest — Écailles de Lune', sub: 'Still the clearest bridge between blackgaze texture and delicate melody.', stat: '9.2 / 10' },
+            { title: 'Nov 03 · Blood Incantation — Absolute Elsewhere', sub: 'Cosmic death metal meets 70s Tangerine Dream synth suites. Ridiculously ambitious.', stat: '9.0 / 10' },
+            { title: 'Oct 21 · Arooj Aftab — Night Reign', sub: 'Sparse nocturnal jazz arrangements; gorgeous upright bass mix.', stat: '8.8 / 10' },
+            { title: 'Oct 08 · Geordie Greep — The New Sound', sub: 'Unapologetically theatrical prog-samba chaos.', stat: '8.5 / 10' }
+          ]
+        },
+
+        'top-metal-albums': {
+          id: 'top-metal-albums',
+          title: 'Top Metal Albums',
+          source: 'at://scrobble.log + notes/music',
+          statusLabel: 'Real-time SSR · from ATProto play counts',
+          isGenerative: true,
+          lead: 'Synthesized on-the-fly by filtering 4,812 ATProto scrobble records tagged progressive, post-metal, and atmospheric metal, weighted by repeat-listen velocity and note mentions.',
+          pills: ['Real-time SSR', 'at://scrobble.log', 'Dense-Sparse rank'],
+          records: [
+            { title: 'Lateralus', sub: 'Tool · 2001 — Progressive Metal · Referenced in 4 public notes.', stat: '318 plays' },
+            { title: 'From Mars to Sirius', sub: 'Gojira · 2005 — Progressive / Groove Metal · Top momentum in Q3–Q4.', stat: '274 plays' },
+            { title: 'Blackwater Park', sub: 'Opeth · 2001 — Progressive Death Metal · Highest full-album completion rate (94%).', stat: '241 plays' },
+            { title: 'Sunbather', sub: 'Deafheaven · 2013 — Blackgaze / Post-Metal · Heavy late-night cluster.', stat: '198 plays' },
+            { title: 'Crack the Skye', sub: 'Mastodon · 2009 — Progressive Sludge · Frequent road-trip repeat.', stat: '176 plays' },
+            { title: 'Écailles de Lune', sub: 'Alcest · 2010 — Post-Black Metal · Recently resurfaced Nov 2026.', stat: '152 plays' }
+          ]
+        },
+
+        'atproto-feeds': {
+          id: 'atproto-feeds',
+          title: 'ATProto Music & Book Feeds',
+          source: 'at://firehose.index',
+          statusLabel: '1,420 indexed records',
+          lead: 'Self-hosted Personal Data Server (PDS) lexicons aggregating music scrobbles, book highlights, film logs, and micro-essays into one queryable hybrid vector + BM25 index.',
+          pills: ['at://firehose.index', 'PDS Lexicons', 'BM25 + Dense'],
+          records: [
+            { title: 'dev.mind.scrobble', sub: 'Real-time listening stream with artist, album, release year, and genre embeddings.', stat: '4,812 recs' },
+            { title: 'dev.mind.reading', sub: 'Book completions, margin highlights, and currently-reading progress.', stat: '318 recs' },
+            { title: 'dev.mind.film', sub: 'Synced watch history with concise single-sentence impressions.', stat: '214 recs' },
+            { title: 'app.bsky.feed.post', sub: 'Public technical threads on distributed systems, LLM latency, and cloud ergonomics.', stat: '890 recs' }
+          ]
+        },
+
+        'ai-cloud-notes': {
+          id: 'ai-cloud-notes',
+          title: 'AI & Cloud Architecture Notes',
+          source: 'notes/systems',
+          statusLabel: '38 technical notes',
+          lead: 'Working engineering notes on low-latency retrieval pipelines, ephemeral SSR view caching, and resilient multi-region inference.',
+          pills: ['notes/systems', 'Public garden', '38 notes'],
+          records: [
+            { title: 'Ephemeral SSR Views with Semantic Cache Promotion', sub: 'How to synthesize long-tail pages on first query, cache at the edge, and promote high-hit views into static routes.', stat: 'Nov 2026' },
+            { title: 'Hybrid Dense-Sparse Search Under 45ms P99', sub: 'Reciprocal Rank Fusion over quantized BGE vectors + SQLite FTS5 without external cluster overhead.', stat: 'Oct 2026' },
+            { title: 'Graceful Degradation to Lite LLM Persona Calls', sub: 'Routing low-confidence queries (<0.42 cosine) to a compact conversational fallback with human-in-the-loop pings.', stat: 'Sep 2026' },
+            { title: 'Zero-Bloat Observability for Agentic Workers', sub: 'Structured trace spans, deterministic replay buffers, and cost ceilings per request.', stat: 'Aug 2026' }
+          ]
+        },
+
+        'recent-essays': {
+          id: 'recent-essays',
+          title: 'Recent Essays & Blogs',
+          source: 'writing/archive',
+          statusLabel: '14 long-form essays',
+          lead: 'Longer pieces exploring software craft, calm interfaces, and personal knowledge systems that feel alive.',
+          pills: ['writing/archive', 'RSS · ATProto', '14 essays'],
+          records: [
+            { title: 'Personal Websites Should Be Queryable, Not Just Browsable', sub: 'Why static navigation trees hide the most interesting intersections of what you actually think about.', stat: '7 min read' },
+            { title: 'Against Chatbots as Landing Pages', sub: 'Search-first spatial interfaces beat blank chat bubbles—conversationality works best as a quiet layer, not the whole room.', stat: '6 min read' },
+            { title: 'Building on Open Personal Data Protocols', sub: 'Owning your music, reading, and writing feeds as composable structured data.', stat: '9 min read' }
+          ]
+        },
+
+        'film-log': {
+          id: 'film-log',
+          title: 'Film Log',
+          source: 'at://letterbox.sync',
+          statusLabel: '214 films logged',
+          lead: 'Recent watches and all-time favorites synced from public cinema logs.',
+          pills: ['at://letterbox.sync', '214 films', 'Updated 3d ago'],
+          records: [
+            { title: 'Stalker (1979)', sub: 'Andrei Tarkovsky — Hypnotic pacing; every frame feels like wet concrete and philosophy.', stat: '★★★★★' },
+            { title: 'Arrival (2016)', sub: 'Denis Villeneuve — Language, memory, and non-linear grief executed with total restraint.', stat: '★★★★★' },
+            { title: 'Aftersun (2022)', sub: 'Charlotte Wells — Devastatingly quiet; lingers for weeks after the credits.', stat: '★★★★½' },
+            { title: 'Children of Men (2006)', sub: 'Alfonso Cuarón — Unmatched world-building without a wasted line of exposition.', stat: '★★★★★' }
+          ]
+        }
+      };
+
+      const IDLE_ITEM_IDS = [
+        'favorite-albums',
+        'most-played',
+        'what-im-listening-to',
+        'atproto-feeds',
+        'ai-cloud-notes',
+        'recent-essays',
+        'film-log'
+      ];
+
+      const SPIN_FILLER_TITLES = [
+        'Favorite Albums',
+        'ATProto Music & Book Feeds',
+        'Dense-Sparse Index',
+        'Most Played',
+        'Top Metal Albums',
+        'AI & Cloud Architecture Notes',
+        '2026 Listening Log',
+        'Recent Essays & Blogs',
+        'Film Log',
+        "What I'm Listening To",
+        'Reading Highlights',
+        'Distributed Systems Notes',
+        'Cached Views · Edge',
+        'Personal Firehose'
+      ];
+
+      /* ========================================================================
+         2. APPLICATION STATE & DOM REFERENCES
+         ======================================================================== */
+      const state = {
+        theme: 'stark', // 'stark' | 'warm'
+        mode: 'idle',   // 'idle' | 'search' | 'generative' | 'fallback'
+        activeQuery: '',
+        persistedViews: new Set(), // Tracks dynamically SSR-built views cached during session
+        isSpinning: false,
+        isViewOpen: false,
+        activeViewId: null,
+        lastClickedIndex: 0,
+        lastFocusedEl: null,
+        phonePingedForQuery: null,
+        // Idle vertical scroll physics
+        driftY: 0,
+        driftPaused: false,
+        driftLoopHeight: 0,
+        driftRafId: null,
+        lastFrameTime: 0
+      };
+
+      const dom = {
+        html: document.documentElement,
+        btnStark: document.getElementById('btn-theme-stark'),
+        btnWarm: document.getElementById('btn-theme-warm'),
+        quickChips: Array.from(document.querySelectorAll('.quick-chip')),
+        homeStage: document.getElementById('home-stage'),
+        profileAnchor: document.getElementById('profile-anchor'),
+        promptForm: document.getElementById('prompt-form'),
+        promptInput: document.getElementById('prompt-input'),
+        promptClear: document.getElementById('prompt-clear'),
+        speechStatus: document.getElementById('speech-status'),
+        llmFallbackSlot: document.getElementById('llm-fallback-slot'),
+        mindContextLabel: document.getElementById('mind-context-label'),
+        mindCountLabel: document.getElementById('mind-count-label'),
+        drumViewport: document.getElementById('drum-viewport'),
+        drumTrack: document.getElementById('drum-track'),
+        viewLayer: document.getElementById('view-layer'),
+        viewBackBtn: document.getElementById('view-back-btn'),
+        viewTitle: document.getElementById('view-title'),
+        viewMetaBar: document.getElementById('view-meta-bar'),
+        viewBody: document.getElementById('view-body')
+      };
+
+      const prefersReducedMotion = () =>
+        window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* ========================================================================
+         3. THEME SWITCHER (STARK EDITORIAL <-> WARM HAND-CRAFTED)
+         ======================================================================== */
+      function setTheme(themeName) {
+        state.theme = themeName;
+        dom.html.setAttribute('data-theme', themeName);
+        dom.btnStark.setAttribute('aria-pressed', String(themeName === 'stark'));
+        dom.btnWarm.setAttribute('aria-pressed', String(themeName === 'warm'));
+
+        // Re-render current drum tags so generative badge text adapts to the active aesthetic
+        if (!state.isSpinning) {
+          refreshGenerativeBadgeText();
+        }
+      }
+
+      function getGenerativeBadgeLabel(isPersisted) {
+        if (isPersisted) {
+          return state.theme === 'stark' ? '[CACHED · PERSISTED]' : 'cached & persisted';
+        }
+        return state.theme === 'stark' ? '[SSR · GENERATE VIEW →]' : 'draft live view ↗';
+      }
+
+      function refreshGenerativeBadgeText() {
+        const badges = dom.drumTrack.querySelectorAll('[data-ssr-badge]');
+        badges.forEach((el) => {
+          const id = el.getAttribute('data-view-id');
+          const persisted = state.persistedViews.has(id);
+          el.textContent = getGenerativeBadgeLabel(persisted);
+          el.className = persisted ? 'persisted-tag' : 'ssr-tag';
+        });
+      }
+
+      dom.btnStark.addEventListener('click', () => setTheme('stark'));
+      dom.btnWarm.addEventListener('click', () => setTheme('warm'));
+
+      /* ========================================================================
+         4. SPEECH CUE & LLM FALLBACK RENDERING
+         ======================================================================== */
+      function setSpeechCue(text, isActiveStatus = false) {
+        dom.speechStatus.textContent = text;
+        dom.speechStatus.classList.toggle('is-active-status', isActiveStatus);
+      }
+
+      function clearFallbackPanel() {
+        dom.llmFallbackSlot.innerHTML = '';
+      }
+
+      function renderFallbackPanel(queryText) {
+        const lower = queryText.toLowerCase();
+        const isPokemon = lower.includes('pokemon') || lower.includes('pokémon');
+        const answerCopy = isPokemon
+          ? "I couldn't find anything about Pokémon in the notes or feeds—probably not a big trainer, though music and distributed systems come up a lot."
+          : `I couldn't find a confident match for “${escapeHtml(queryText)}” in the public notes or feeds yet—music, films, and AI/cloud architecture show up most often.`;
+
+        const alreadyPinged = state.phonePingedForQuery === lower;
+
+        dom.llmFallbackSlot.innerHTML = `
+          <div class="llm-fallback-panel" id="llm-fallback-card">
+            <p class="llm-answer-copy">${answerCopy}</p>
+            <button
+              type="button"
+              id="ping-phone-btn"
+              class="ping-btn ${alreadyPinged ? 'is-sent' : ''}"
+              ${alreadyPinged ? 'disabled' : ''}
+            >
+              <span class="live-dot" style="background: ${alreadyPinged ? 'var(--persisted-ink)' : 'var(--accent)'};"></span>
+              <span id="ping-btn-label">${
+                alreadyPinged
+                  ? "Ping sent — if answered, I'll add it to the persona."
+                  : 'Ping my phone to ask'
+              }</span>
+            </button>
+          </div>
+        `;
+
+        // Trigger smooth entry transition
+        requestAnimationFrame(() => {
+          const card = document.getElementById('llm-fallback-card');
+          if (card) card.classList.add('is-visible');
+        });
+
+        const pingBtn = document.getElementById('ping-phone-btn');
+        if (pingBtn && !alreadyPinged) {
+          pingBtn.addEventListener('click', () => {
+            state.phonePingedForQuery = lower;
+            pingBtn.classList.add('is-sent');
+            pingBtn.disabled = true;
+            const dot = pingBtn.querySelector('.live-dot');
+            if (dot) dot.style.background = 'var(--persisted-ink)';
+            const label = document.getElementById('ping-btn-label');
+            if (label) {
+              label.textContent = "Ping sent — if answered, I'll add it to the persona.";
+            }
+            setSpeechCue('Ping dispatched to phone.', false);
+          });
+        }
+      }
+
+      /* ========================================================================
+         5. DRUM RENDERING & IDLE VERTICAL DRIFT ENGINE
+         ======================================================================== */
+      function createMindItemElement(itemConfig, index) {
+        const view = VIEWS_DB[itemConfig.id] || itemConfig.customView;
+        const isPersisted = state.persistedViews.has(view.id);
+        const isGenerative = Boolean(itemConfig.generative) && !isPersisted;
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'mind-item';
+        if (isGenerative) btn.classList.add('is-generative');
+        if (itemConfig.tangential) btn.classList.add('is-tangential');
+
+        btn.dataset.viewId = view.id;
+        btn.dataset.itemIndex = String(index);
+
+        const badgeHtml = itemConfig.generative
+          ? `<span class="${isPersisted ? 'persisted-tag' : 'ssr-tag'}" data-ssr-badge data-view-id="${escapeHtml(view.id)}">${getGenerativeBadgeLabel(isPersisted)}</span>`
+          : '';
+
+        const metaText = itemConfig.generative && isPersisted
+          ? `${view.source} · Cached & persisted`
+          : `${view.source} · ${view.statusLabel}`;
+
+        btn.innerHTML = `
+          <div class="mind-item-row">
+            <span class="mind-item-title">${escapeHtml(view.title)}</span>
+            ${badgeHtml}
+            ${!itemConfig.generative ? '<span class="mind-item-arrow" aria-hidden="true">→</span>' : ''}
+          </div>
+          <div class="mind-item-meta">
+            <span>${escapeHtml(metaText)}</span>
+          </div>
+        `;
+
+        btn.addEventListener('click', () => {
+          handleItemSelection(view, btn, Boolean(itemConfig.generative) && !state.persistedViews.has(view.id));
+        });
+
+        return btn;
+      }
+
+      function renderIdleDrum() {
+        stopIdleDrift();
+        state.mode = 'idle';
+        state.activeQuery = '';
+        dom.mindContextLabel.textContent = 'OPEN INDEX · LIVE DRIFT';
+        dom.mindCountLabel.textContent = `${IDLE_ITEM_IDS.length} STREAMS`;
+        dom.drumTrack.innerHTML = '';
+        dom.drumTrack.style.transition = 'none';
+        dom.drumTrack.style.transform = 'translateY(0px)';
+
+        // Render two seamless sets for continuous vertical looping (unless reduced motion)
+        const copies = prefersReducedMotion() ? 1 : 2;
+        for (let c = 0; c < copies; c++) {
+          const group = document.createElement('div');
+          group.className = 'idle-drift-group';
+          if (c === 1) group.setAttribute('aria-hidden', 'true');
+
+          IDLE_ITEM_IDS.forEach((id, idx) => {
+            const el = createMindItemElement({ id }, idx);
+            if (c === 1) el.tabIndex = -1;
+            group.appendChild(el);
+          });
+          dom.drumTrack.appendChild(group);
+        }
+
+        // Measure first group height for seamless loop wrap
+        requestAnimationFrame(() => {
+          const firstGroup = dom.drumTrack.querySelector('.idle-drift-group');
+          state.driftLoopHeight = firstGroup ? firstGroup.offsetHeight : 0;
+          state.driftY = 0;
+          if (!prefersReducedMotion() && state.driftLoopHeight > 0) {
+            startIdleDrift();
+          }
+        });
+      }
+
+      function startIdleDrift() {
+        stopIdleDrift();
+        state.lastFrameTime = performance.now();
+
+        function tick(now) {
+          if (state.mode !== 'idle' || state.isViewOpen || state.isSpinning) {
+            state.driftRafId = null;
+            return;
+          }
+
+          const dt = Math.min(48, now - state.lastFrameTime);
+          state.lastFrameTime = now;
+
+          if (!state.driftPaused && state.driftLoopHeight > 0) {
+            // Calm, hypnotic editorial drift (~22px per second)
+            state.driftY += (dt / 1000) * 22;
+            if (state.driftY >= state.driftLoopHeight) {
+              state.driftY -= state.driftLoopHeight;
+            }
+            dom.drumTrack.style.transform = `translate3d(0, ${-state.driftY.toFixed(2)}px, 0)`;
+          }
+
+          state.driftRafId = requestAnimationFrame(tick);
+        }
+
+        state.driftRafId = requestAnimationFrame(tick);
+      }
+
+      function stopIdleDrift() {
+        if (state.driftRafId !== null) {
+          cancelAnimationFrame(state.driftRafId);
+          state.driftRafId = null;
+        }
+      }
+
+      // Pause idle drift immediately on hover or keyboard focus so targets never run away
+      dom.drumViewport.addEventListener('mouseenter', () => {
+        state.driftPaused = true;
+      });
+      dom.drumViewport.addEventListener('mouseleave', () => {
+        if (!dom.drumViewport.contains(document.activeElement)) {
+          state.driftPaused = false;
+        }
+      });
+      dom.drumViewport.addEventListener('focusin', () => {
+        state.driftPaused = true;
+      });
+      dom.drumViewport.addEventListener('focusout', () => {
+        setTimeout(() => {
+          if (!dom.drumViewport.contains(document.activeElement)) {
+            state.driftPaused = false;
+          }
+        }, 10);
+      });
+
+      /* ========================================================================
+         6. SEARCH ROUTING & SLOT-MACHINE SPIN PHYSICS
+         ======================================================================== */
+      function buildCustomDynamicView(rawQuery) {
+        const cleanTitle = rawQuery
+          .trim()
+          .replace(/\s+/g, ' ')
+          .replace(/\b\w/g, (ch) => ch.toUpperCase());
+        const id = 'ssr-' + cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+        if (!VIEWS_DB[id]) {
+          VIEWS_DB[id] = {
+            id,
+            title: cleanTitle,
+            source: 'at://firehose.index + notes/*',
+            statusLabel: 'Real-time SSR · synthesized from feeds',
+            isGenerative: true,
+            lead: `Dynamically realized view for “${cleanTitle}” — assembled on first request by cross-referencing public notes, ATProto feeds, and dense-sparse relevance scores.`,
+            pills: ['Real-time SSR', 'Dense-Sparse fusion', 'Edge cached'],
+            records: [
+              { title: `${cleanTitle} — Primary Signal`, sub: 'Matched across public notes and recent ATProto threads with high semantic density.', stat: '0.89 score' },
+              { title: 'Supporting Feed Entries', sub: 'Three related records pulled from personal listening, reading, and architecture logs.', stat: '3 records' },
+              { title: 'Promotion Eligibility', sub: 'View is cached at the edge and will persist permanently if revisited.', stat: 'TTL · 7d' }
+            ]
+          };
+        }
+        return VIEWS_DB[id];
+      }
+
+      function resolveQueryPlan(rawQuery) {
+        const q = rawQuery.trim().toLowerCase();
+
+        // State 1: "music" or broad music hits
+        if (
+          q === 'music' ||
+          q.includes('album') && !q.includes('metal') ||
+          q.includes('listen') ||
+          q.includes('song') ||
+          q.includes('played')
+        ) {
+          return {
+            mode: 'search',
+            contextLabel: 'DENSE-SPARSE HITS · MUSIC',
+            countLabel: '4 CACHED · 1 SSR',
+            loadingCue: 'Searching feeds & notes...',
+            settledCue: 'Found in feeds & notes.',
+            items: [
+              { id: 'favorite-albums' },
+              { id: 'most-played' },
+              { id: 'what-im-listening-to' },
+              { id: 'listening-log-2026' },
+              { id: 'top-metal-albums', generative: true }
+            ]
+          };
+        }
+
+        // State 2: "top metal albums" (flagship dynamic SSR)
+        if (q.includes('metal')) {
+          const persisted = state.persistedViews.has('top-metal-albums');
+          return {
+            mode: 'generative',
+            contextLabel: persisted ? 'PROMOTED CACHE · METAL' : 'REAL-TIME SSR PROPOSAL',
+            countLabel: persisted ? 'CACHED VIEW' : '1 DYNAMIC VIEW',
+            loadingCue: 'Searching feeds & notes...',
+            settledCue: persisted
+              ? 'Found in promoted view cache.'
+              : 'No page yet—let me build that for you...',
+            items: [
+              { id: 'top-metal-albums', generative: true },
+              { id: 'favorite-albums', tangential: true },
+              { id: 'most-played', tangential: true }
+            ]
+          };
+        }
+
+        // State 3: "favorite pokemon" or low-confidence personal trivia -> Lite LLM Fallback
+        if (
+          q.includes('pokemon') ||
+          q.includes('pokémon') ||
+          q.includes('zodiac') ||
+          q.includes('pizza') ||
+          q.includes('weather') ||
+          q.includes('favorite color') ||
+          q.includes('fav ')
+        ) {
+          return {
+            mode: 'fallback',
+            contextLabel: 'LOW CONFIDENCE · ADJACENT MEMORY',
+            countLabel: 'FALLBACK LLM',
+            loadingCue: 'Hmm, let me think about that...',
+            settledCue: 'Not in the index—here is my best guess:',
+            fallbackQuery: rawQuery.trim(),
+            items: [
+              { id: 'ai-cloud-notes', tangential: true },
+              { id: 'favorite-albums', tangential: true },
+              { id: 'film-log', tangential: true }
+            ]
+          };
+        }
+
+        // General cached matches (cloud, ai, film, book, essay)
+        if (q.includes('ai') || q.includes('cloud') || q.includes('arch') || q.includes('note') || q.includes('system')) {
+          return {
+            mode: 'search',
+            contextLabel: 'DENSE-SPARSE HITS · SYSTEMS',
+            countLabel: '3 CACHED',
+            loadingCue: 'Searching feeds & notes...',
+            settledCue: 'Found in architecture notes & feeds.',
+            items: [
+              { id: 'ai-cloud-notes' },
+              { id: 'atproto-feeds' },
+              { id: 'recent-essays' }
+            ]
+          };
+        }
+
+        if (q.includes('film') || q.includes('movie') || q.includes('book') || q.includes('blog') || q.includes('essay')) {
+          return {
+            mode: 'search',
+            contextLabel: 'DENSE-SPARSE HITS · ARCHIVE',
+            countLabel: '3 CACHED',
+            loadingCue: 'Searching feeds & notes...',
+            settledCue: 'Found in feeds & writing archive.',
+            items: [
+              { id: 'film-log' },
+              { id: 'recent-essays' },
+              { id: 'atproto-feeds' }
+            ]
+          };
+        }
+
+        // Any other specific niche query -> Offer dynamic SSR synthesis!
+        const customView = buildCustomDynamicView(rawQuery);
+        return {
+          mode: 'generative',
+          contextLabel: 'REAL-TIME SSR PROPOSAL',
+          countLabel: '1 DYNAMIC VIEW',
+          loadingCue: 'Searching feeds & notes...',
+          settledCue: 'No page yet—let me build that for you...',
+          items: [
+            { id: customView.id, customView, generative: true },
+            { id: 'ai-cloud-notes', tangential: true },
+            { id: 'atproto-feeds', tangential: true }
+          ]
+        };
+      }
+
+      function runSearch(rawQuery) {
+        const query = rawQuery.trim();
+        updateQuickChipActiveState(query);
+        dom.promptClear.classList.toggle('hidden', query.length === 0);
+
+        if (!query) {
+          clearFallbackPanel();
+          setSpeechCue('Ask away', false);
+          renderIdleDrum();
+          return;
+        }
+
+        // If a view is currently open, close it cleanly first then run search
+        if (state.isViewOpen) {
+          closeExpandedView(true);
+        }
+
+        stopIdleDrift();
+        clearFallbackPanel();
+        state.isSpinning = true;
+        state.activeQuery = query;
+
+        const plan = resolveQueryPlan(query);
+        state.mode = plan.mode;
+
+        dom.profileAnchor.classList.add('is-thinking');
+        setSpeechCue(plan.loadingCue, true);
+        dom.mindContextLabel.textContent = 'INDEXING · RETRIEVAL SPIN';
+        dom.mindCountLabel.textContent = '...';
+
+        // Reduced motion fallback: clean opacity cross-fade
+        if (prefersReducedMotion()) {
+          dom.drumTrack.style.opacity = '0';
+          setTimeout(() => {
+            mountSearchResults(plan);
+            dom.drumTrack.style.transition = 'opacity 180ms ease';
+            dom.drumTrack.style.opacity = '1';
+            finishSpin(plan);
+          }, 180);
+          return;
+        }
+
+        // Slot-Machine Spin Choreography (~650ms total):
+        // Build a tall temporary reel with fast filler rows on top and final results at the bottom,
+        // spin rapidly with vertical motion blur, then decelerate smoothly with spring-like easing.
+        dom.drumTrack.innerHTML = '';
+        dom.drumTrack.style.transition = 'none';
+        dom.drumTrack.style.transform = 'translate3d(0, 0px, 0)';
+
+        const fillerWrap = document.createElement('div');
+        fillerWrap.setAttribute('aria-hidden', 'true');
+        const fillerCount = 12;
+        for (let i = 0; i < fillerCount; i++) {
+          const fake = document.createElement('div');
+          fake.className = 'mind-item';
+          fake.style.pointerEvents = 'none';
+          fake.style.opacity = '0.68';
+          const title = SPIN_FILLER_TITLES[(i + query.length) % SPIN_FILLER_TITLES.length];
+          fake.innerHTML = `
+            <div class="mind-item-row">
+              <span class="mind-item-title">${escapeHtml(title)}</span>
+            </div>
+            <div class="mind-item-meta"><span>at://firehose.index · scanning</span></div>
+          `;
+          fillerWrap.appendChild(fake);
+        }
+
+        const resultsWrap = document.createElement('div');
+        resultsWrap.id = 'settled-results-wrap';
+        // Add subtle top padding so settled results sit comfortably centered inside the vertical mask
+        resultsWrap.style.paddingTop = '48px';
+        resultsWrap.style.paddingBottom = '48px';
+
+        plan.items.forEach((itemCfg, idx) => {
+          resultsWrap.appendChild(createMindItemElement(itemCfg, idx));
+        });
+
+        dom.drumTrack.appendChild(fillerWrap);
+        dom.drumTrack.appendChild(resultsWrap);
+
+        // Measure distance to land the results neatly in view
+        const targetOffset = fillerWrap.offsetHeight;
+
+        // Kick off rapid spin with directional vertical blur
+        dom.drumTrack.classList.add('is-spinning');
+
+        requestAnimationFrame(() => {
+          // Force reflow
+          void dom.drumTrack.offsetHeight;
+          dom.drumTrack.style.transition = 'transform 660ms cubic-bezier(0.16, 1, 0.3, 1)';
+          dom.drumTrack.style.transform = `translate3d(0, ${-targetOffset}px, 0)`;
+
+          // Drop vertical motion blur ~440ms in so items sharpen cleanly as they decelerate into place
+          setTimeout(() => {
+            dom.drumTrack.classList.remove('is-spinning');
+          }, 420);
+
+          // Settle cleanly and prune off-screen filler rows
+          setTimeout(() => {
+            mountSearchResults(plan);
+            finishSpin(plan);
+          }, 680);
+        });
+      }
+
+      function mountSearchResults(plan) {
+        dom.drumTrack.classList.remove('is-spinning');
+        dom.drumTrack.style.transition = 'none';
+        dom.drumTrack.style.transform = 'translate3d(0, 0px, 0)';
+        dom.drumTrack.innerHTML = '';
+
+        const wrap = document.createElement('div');
+        wrap.style.paddingTop = '46px';
+        wrap.style.paddingBottom = '46px';
+
+        plan.items.forEach((itemCfg, idx) => {
+          wrap.appendChild(createMindItemElement(itemCfg, idx));
+        });
+        dom.drumTrack.appendChild(wrap);
+      }
+
+      function finishSpin(plan) {
+        state.isSpinning = false;
+        dom.profileAnchor.classList.remove('is-thinking');
+        dom.mindContextLabel.textContent = plan.contextLabel;
+        dom.mindCountLabel.textContent = plan.countLabel;
+
+        if (plan.mode === 'fallback') {
+          // Slight thoughtful beat before answering conversationally in the mouth area
+          setTimeout(() => {
+            if (state.activeQuery.toLowerCase() === plan.fallbackQuery.toLowerCase()) {
+              setSpeechCue(plan.settledCue, false);
+              renderFallbackPanel(plan.fallbackQuery);
+            }
+          }, 220);
+        } else {
+          setSpeechCue(plan.settledCue, plan.mode === 'generative');
+        }
+      }
+
+      function updateQuickChipActiveState(query) {
+        const q = query.trim().toLowerCase();
+        dom.quickChips.forEach((chip) => {
+          const cq = chip.dataset.query.toLowerCase();
+          chip.classList.toggle('is-active', q === cq);
+        });
+      }
+
+      /* ========================================================================
+         7. DYNAMIC SSR LIVE-BUILD SHIMMER + CAMERA PAN-AND-EXPAND (FLIP)
+         ======================================================================== */
+      function handleItemSelection(view, itemBtn, needsLiveBuild) {
+        if (state.isSpinning || state.isViewOpen) return;
+
+        state.lastFocusedEl = itemBtn;
+
+        if (needsLiveBuild) {
+          // Run sleek ~800ms live-build shimmer before panning into the realized page
+          itemBtn.classList.add('is-building');
+          setSpeechCue('Synthesizing view from ATProto play counts...', true);
+
+          const badge = itemBtn.querySelector('[data-ssr-badge]');
+          if (badge) {
+            badge.textContent = state.theme === 'stark' ? '[SSR · BUILDING...]' : 'drafting view...';
+          }
+
+          setTimeout(() => {
+            state.persistedViews.add(view.id);
+            itemBtn.classList.remove('is-building');
+            itemBtn.classList.remove('is-generative');
+            refreshGenerativeBadgeText();
+            openExpandedView(view, itemBtn, true);
+          }, prefersReducedMotion() ? 180 : 800);
+        } else {
+          openExpandedView(view, itemBtn, false);
+        }
+      }
+
+      function populateExpandedView(view, justBuilt) {
+        dom.viewTitle.textContent = view.title;
+
+        const isPersisted = state.persistedViews.has(view.id);
+        const pills = [...(view.pills || [])];
+        if (isPersisted) {
+          pills.unshift(justBuilt ? 'Cached & persisted · Built in 780ms' : 'Cached & persisted');
+        }
+
+        dom.viewMetaBar.innerHTML = pills
+          .map((pill, idx) => {
+            let cls = 'meta-pill';
+            if (isPersisted && idx === 0) cls += ' is-persisted';
+            else if (pill === 'Real-time SSR' && !isPersisted) cls += ' is-accent';
+            return `<span class="${cls}">${escapeHtml(pill)}</span>`;
+          })
+          .join('');
+
+        const recordsHtml = (view.records || [])
+          .map(
+            (rec, i) => `
+              <div class="record-row">
+                <span class="record-idx">${String(i + 1).padStart(2, '0')}</span>
+                <div>
+                  <div class="record-primary">${escapeHtml(rec.title)}</div>
+                  <div class="record-sub">${escapeHtml(rec.sub)}</div>
+                </div>
+                <div class="record-stat">${escapeHtml(rec.stat)}</div>
+              </div>
+            `
+          )
+          .join('');
+
+        dom.viewBody.innerHTML = `
+          <p class="view-lead">${escapeHtml(view.lead)}</p>
+          <div class="record-list">${recordsHtml}</div>
+        `;
+      }
+
+      function openExpandedView(view, sourceBtn, justBuilt) {
+        stopIdleDrift();
+        state.isViewOpen = true;
+        state.activeViewId = view.id;
+
+        const sourceTitleEl = sourceBtn.querySelector('.mind-item-title');
+        const sourceRect = sourceTitleEl.getBoundingClientRect();
+
+        // Populate view layer invisibly first so we can measure the exact destination <h1> rect
+        populateExpandedView(view, justBuilt);
+        dom.viewLayer.scrollTop = 0;
+        dom.viewLayer.style.visibility = 'hidden';
+        dom.viewLayer.classList.add('is-open');
+        dom.viewLayer.classList.remove('is-content-visible', 'is-closing');
+        dom.viewLayer.setAttribute('aria-hidden', 'false');
+
+        const targetRect = dom.viewTitle.getBoundingClientRect();
+        const targetComputed = window.getComputedStyle(dom.viewTitle);
+        const sourceComputed = window.getComputedStyle(sourceTitleEl);
+
+        if (prefersReducedMotion()) {
+          dom.homeStage.classList.add('is-panned-out', 'is-hidden');
+          dom.viewLayer.style.visibility = 'visible';
+          dom.viewLayer.classList.add('is-content-visible');
+          dom.viewBackBtn.focus();
+          return;
+        }
+
+        // Create crisp full-resolution shared-element flying clone anchored at target size,
+        // inversely transformed via FLIP to sit pixel-perfectly on top of the source title.
+        const fly = document.createElement('div');
+        fly.className = 'flying-title';
+        fly.textContent = view.title;
+        fly.style.fontSize = targetComputed.fontSize;
+        fly.style.fontFamily = targetComputed.fontFamily;
+        fly.style.letterSpacing = targetComputed.letterSpacing;
+        fly.style.lineHeight = targetComputed.lineHeight;
+        fly.style.left = `${targetRect.left}px`;
+        fly.style.top = `${targetRect.top}px`;
+
+        const scale = parseFloat(sourceComputed.fontSize) / parseFloat(targetComputed.fontSize);
+        const dx = sourceRect.left - targetRect.left;
+        const dy = sourceRect.top - targetRect.top;
+
+        fly.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${scale})`;
+        document.body.appendChild(fly);
+
+        // Hide real titles during flight
+        sourceBtn.classList.add('is-flying-source');
+        sourceTitleEl.style.visibility = 'hidden';
+        dom.viewTitle.style.visibility = 'hidden';
+        dom.viewLayer.style.visibility = 'visible';
+
+        // Trigger synchronized camera push-through + shared-element glide
+        requestAnimationFrame(() => {
+          void fly.offsetWidth;
+          dom.homeStage.classList.add('is-panned-out');
+
+          fly.style.transition = 'transform 520ms cubic-bezier(0.22, 1, 0.36, 1)';
+          fly.style.transform = 'translate3d(0, 0, 0) scale(1)';
+
+          // Lead-in reveal of return button, metadata, and page body
+          setTimeout(() => {
+            dom.viewLayer.classList.add('is-content-visible');
+          }, 150);
+
+          // Finalize flight cleanly
+          setTimeout(() => {
+            dom.viewTitle.style.visibility = 'visible';
+            sourceTitleEl.style.visibility = '';
+            sourceBtn.classList.remove('is-flying-source');
+            dom.homeStage.classList.add('is-hidden');
+            fly.remove();
+            dom.viewBackBtn.focus();
+          }, 540);
+        });
+      }
+
+      function closeExpandedView(instant = false) {
+        if (!state.isViewOpen) return;
+
+        // Instant teardown (used if user clicks a top quick-chip while inside a view)
+        if (instant || prefersReducedMotion()) {
+          state.isViewOpen = false;
+          state.activeViewId = null;
+          dom.viewLayer.classList.remove('is-open', 'is-content-visible', 'is-closing');
+          dom.viewLayer.setAttribute('aria-hidden', 'true');
+          dom.homeStage.classList.remove('is-hidden', 'is-panned-out');
+          if (state.mode === 'idle') startIdleDrift();
+          return;
+        }
+
+        // Step 1: Quickly fade out view body content (~150ms)
+        dom.viewLayer.classList.add('is-closing');
+        dom.viewLayer.classList.remove('is-content-visible');
+
+        const fromRect = dom.viewTitle.getBoundingClientRect();
+        const fromComputed = window.getComputedStyle(dom.viewTitle);
+
+        // Reveal home stage (still panned-out) so we can measure the return slot accurately
+        dom.homeStage.classList.remove('is-hidden');
+
+        // Find matching slot in the current drum
+        const targetBtn =
+          (state.lastFocusedEl && dom.drumTrack.contains(state.lastFocusedEl)
+            ? state.lastFocusedEl
+            : dom.drumTrack.querySelector(`[data-view-id="${CSS.escape(state.activeViewId || '')}"]`)) ||
+          dom.drumTrack.querySelector('.mind-item');
+
+        const targetTitleEl = targetBtn ? targetBtn.querySelector('.mind-item-title') : null;
+
+        setTimeout(() => {
+          if (targetTitleEl) {
+            const toRect = targetTitleEl.getBoundingClientRect();
+            const toComputed = window.getComputedStyle(targetTitleEl);
+
+            // Spawn flying title at the current <h1> coordinates
+            const fly = document.createElement('div');
+            fly.className = 'flying-title';
+            fly.textContent = dom.viewTitle.textContent;
+            fly.style.fontSize = fromComputed.fontSize;
+            fly.style.fontFamily = fromComputed.fontFamily;
+            fly.style.letterSpacing = fromComputed.letterSpacing;
+            fly.style.lineHeight = fromComputed.lineHeight;
+            fly.style.left = `${fromRect.left}px`;
+            fly.style.top = `${fromRect.top}px`;
+            fly.style.transform = 'translate3d(0, 0, 0) scale(1)';
+            document.body.appendChild(fly);
+
+            dom.viewTitle.style.visibility = 'hidden';
+            targetTitleEl.style.visibility = 'hidden';
+
+            const scale = parseFloat(toComputed.fontSize) / parseFloat(fromComputed.fontSize);
+            const dx = toRect.left - fromRect.left;
+            const dy = toRect.top - fromRect.top;
+
+            requestAnimationFrame(() => {
+              void fly.offsetWidth;
+              // Pan profile SVG + search box smoothly back in from the left
+              dom.homeStage.classList.remove('is-panned-out');
+
+              // Glide & scale <h1> smoothly back into the mind reel
+              fly.style.transition = 'transform 460ms cubic-bezier(0.22, 1, 0.36, 1)';
+              fly.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${scale})`;
+
+              setTimeout(() => {
+                fly.remove();
+                dom.viewTitle.style.visibility = '';
+                targetTitleEl.style.visibility = '';
+                dom.viewLayer.classList.remove('is-open', 'is-closing');
+                dom.viewLayer.setAttribute('aria-hidden', 'true');
+                state.isViewOpen = false;
+                state.activeViewId = null;
+
+                if (state.mode === 'idle') {
+                  state.driftPaused = false;
+                  startIdleDrift();
+                }
+
+                // Restore keyboard focus gracefully
+                if (targetBtn && typeof targetBtn.focus === 'function') {
+                  targetBtn.focus({ preventScroll: true });
+                } else {
+                  dom.promptInput.focus();
+                }
+              }, 480);
+            });
+          } else {
+            dom.homeStage.classList.remove('is-panned-out');
+            dom.viewLayer.classList.remove('is-open', 'is-closing');
+            dom.viewLayer.setAttribute('aria-hidden', 'true');
+            state.isViewOpen = false;
+            state.activeViewId = null;
+          }
+        }, 145);
+      }
+
+      /* ========================================================================
+         8. EVENT LISTENERS & KEYBOARD ACCESSIBILITY
+         ======================================================================== */
+      dom.promptForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        runSearch(dom.promptInput.value);
+      });
+
+      dom.promptInput.addEventListener('input', () => {
+        const val = dom.promptInput.value.trim();
+        dom.promptClear.classList.toggle('hidden', val.length === 0);
+        if (val.length === 0 && state.mode !== 'idle') {
+          runSearch('');
+        }
+      });
+
+      dom.promptClear.addEventListener('click', () => {
+        dom.promptInput.value = '';
+        runSearch('');
+        dom.promptInput.focus();
+      });
+
+      dom.quickChips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const query = chip.dataset.query || '';
+          dom.promptInput.value = query;
+          runSearch(query);
+        });
+      });
+
+      dom.viewBackBtn.addEventListener('click', () => closeExpandedView(false));
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && state.isViewOpen) {
+          e.preventDefault();
+          closeExpandedView(false);
+        }
+      });
+
+      // Keep idle loop measurements accurate across resizes
+      let resizeTimer = null;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          if (state.mode === 'idle' && !state.isViewOpen) {
+            const firstGroup = dom.drumTrack.querySelector('.idle-drift-group');
+            if (firstGroup) {
+              state.driftLoopHeight = firstGroup.offsetHeight;
+            }
+          }
+        }, 150);
+      });
+
+      /* ========================================================================
+         9. UTILITIES & INITIALIZATION
+         ======================================================================== */
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      // Initialize default Stark Editorial view + calm idle drift
+      setTheme('stark');
+      renderIdleDrum();
+    })();
+  </script>
+</body>
+</html>
