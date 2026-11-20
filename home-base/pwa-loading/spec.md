@@ -6,7 +6,7 @@
 
 Navigation between pages waits on the network. When a visitor clicks a
 HeroThoughts entry on a slow connection, they sit on a blank/loading page — and
-the no-router fallback transition (hero-thoughts 03) has a visible load seam for
+the no-router fallback transition (hero-thoughts 04) has a visible load seam for
 exactly that reason. Repeat visits should be instant and the site should work
 offline for the pages it has already served.
 
@@ -34,10 +34,17 @@ hover/viewport prefetch (and prerender) so a click is instant. No SSR is require
   a normal navigation elsewhere.
 - **Progressive enhancement.** Service workers are unsupported in some contexts
   (no-JS, private modes) — the site must behave exactly as today without one. The
-  hero fallback entrance (hero-thoughts 03) must still run from a worker-served
+  hero fallback entrance (hero-thoughts 04) must still run from a worker-served
   page with no first-paint regression.
-- **Placement.** `public/sw.js` + `public/manifest.webmanifest` (outside `src/`,
-  so the guardrail scan is untouched).
+- **Build-time precache.** Hashed asset filenames are unknown to a hand-written
+  static file, so the precache list is generated at build time (a small Astro
+  integration or `vite-plugin-pwa`); the generated worker and
+  `manifest.webmanifest` land in the build output, outside `src/` (guardrail scan
+  untouched).
+- **Cache keys ignore the query string.** The `?from=hero` marker only changes
+  what the page's script reveals, not the document, so `/view/music` and
+  `/view/music?from=hero` must hit the same cache entry (Cache API
+  `ignoreSearch`).
 
 ## Out of Scope
 

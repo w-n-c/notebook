@@ -25,7 +25,7 @@ client-side affordances; their real backends arrive in Phase 3 (Orama) and Phase
 2. **The Thought Stream.** A vertically drifting column of thoughts and results
    on the Silhouette's open right side. At rest it drifts slowly through ambient
    subjects; a prompt settles it onto the best-fit views.
-3. **The conversation (ladder, not chat).** A three-tier resolution ladder,
+3. **The resolution ladder.** A three-tier resolution ladder,
    rendered as stream content rather than spoken turns:
    - **Dynamic View** — a cached, direct match appears as an ordinary stream
      entry.
@@ -38,7 +38,9 @@ client-side affordances; their real backends arrive in Phase 3 (Orama) and Phase
      states this honestly.
 4. **Real navigation + cinematic motion.** Selecting an entry navigates for real
    to a URL-addressed page; the title→`<h1>` morph and the Silhouette/Stream
-   pan-out and pan-in are native cross-document View Transitions.
+   pan-out and pan-in are cinematic motion over that real navigation:
+   cross-document View Transitions where supported, a no-router fallback in
+   Firefox (ADR 0010 decision 4).
 
 ## Implementation Decisions
 
@@ -57,10 +59,10 @@ client-side affordances; their real backends arrive in Phase 3 (Orama) and Phase
   honoured globally.
 
 ### Theme
-- One warm identity, light and dark, resolved by `light-dark()` (ADR 0011). New
-  semantic roles: terracotta (CTA/focus), sage (cached/live), ochre
-  (building/thinking), blueprint border (unbuilt/generated), ink-stroke
-  (Silhouette). No theme toggle.
+- One warm identity, light and dark, declared by the site in `src/theme.ts` and
+  applied through the library's `layoutTokens({ theme })` hook (ADR 0011).
+  Terracotta is the accent role; sage, ochre, blueprint and ink-stroke are
+  `--site-*` roles. No theme toggle. UI rules live in `docs/ui-guide.md`.
 
 ### Resolution ladder & coordinator
 - Pure client module `src/lib/resolution.ts`: `resolvePrompt(prompt, catalog)` →
@@ -68,7 +70,7 @@ client-side affordances; their real backends arrive in Phase 3 (Orama) and Phase
   imports; unit-testable in `bun test`.
 - The seed catalog is injectable; Phase 3 replaces it with the Orama-backed
   source without touching the UI.
-- `src/lib/navigation.ts` owns the URL rules (`?from=chat`, home detection).
+- `src/lib/navigation.ts` owns the URL rules (`?from=hero`, home detection).
 
 ### Static by default, SSR allowed
 The site is static by default, but **static-only is not a goal** — ADR 0004
@@ -81,8 +83,8 @@ permitted when a workload actually needs them (Phase 3/5).
 ### Navigation, motion & continuity
 - Selecting an entry performs a **real navigation** to a URL-addressed page
   (RESTful; cacheable/bakeable; no-JS degrades to a plain link). The hero is an
-  entry point, not a persistent chat shell.
-- Any page reached from chat carries `?from=chat` and renders a return CTA;
+  entry point, not a persistent app shell.
+- Any page reached from the hero carries `?from=hero` and renders a return CTA;
   pages without the param don't.
 - **Cinematic navigation, no router** (ADR 0010 decision 4): real links, real
   URL/back-forward/deep-links. Cross-document View Transitions
@@ -123,6 +125,9 @@ permitted when a workload actually needs them (Phase 3/5).
 - Orama search index, entity ingestion, real three-tier resolution (Phase 3/5).
 - Server endpoints / SSR — deferred to the phases that need them (3/5); Phase 2 adds none.
 - Promoting motion to a Design System layer (component-local for now).
+- Delivering an Open Question to the author (the handoff endpoint is Phase 5);
+  Phase 2 keeps the four lifecycle copy states in the copy module but does not
+  render the accept/decline UI.
 - A combined "Feeds" page.
 
 ## Ticket Map
@@ -130,10 +135,12 @@ permitted when a workload actually needs them (Phase 3/5).
 | Ticket | Title | Status |
 | --- | --- | --- |
 | 01 | HeroThoughts core (head, swarm, ladder, seed, routes, CTA, nav, responsive) | done |
-| 02 | Warm design & composition (Silhouette + Thought Stream, theme tokens, callouts) | open |
-| 03 | Motion & cross-document view transitions (drift, settle, pan-in/out) | open |
+| 02 | Retire the conversation vocabulary (shared seam: `?from=hero`, no echo, speech cue, renames) | open |
+| 03 | Warm design & composition (Silhouette + Thought Stream, theme, callouts) | open |
+| 04 | Cinematic navigation (drift, settle, view transitions + Firefox fallback) | open |
+| 05 | Theme override hook in `@w-n-c/layout` (shared seam, blocks 03) | open |
 
-The former Ticket 03 (conversation restore) is **deleted** — the surface is
+The former conversation-restore ticket is **deleted** — the surface is
 stateless (ADR 0010).
 
 ## Verification

@@ -2,7 +2,7 @@
 
 **What to build:** The interactive conversational hero (Phase 2): hollow side-profile head SVG (outline only), prompt input (accessible combobox), thought swarm, three-tier resolution coordinator, seed catalog, `/view/[category]` placeholder route, `?from=chat` return CTA, home-only nav auto-hide, and below-fold identity strip.
 
-**Blocking Edges:** Blocks #02, #03.
+**Blocking Edges:** Blocks #02, #03, #04.
 
 **Acceptance Criteria:**
 
@@ -17,3 +17,5 @@
 - [x] `bun test` + `bun run build` green; `tests/guardrails.test.ts` and axe WCAG AA pass; reduced-motion honored.
 
 **Status:** `done`
+
+> **Superseded in part by ADR 0010:** the conversational framing, hollow-head SVG, prompt echo, voice line, and `?from=chat` delivered here are retired by tickets #02–#04. The resolution ladder, seed catalog, routes, nav auto-hide, and identity strip stand.

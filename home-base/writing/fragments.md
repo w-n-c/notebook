@@ -64,3 +64,21 @@ resolves the path from the root and finds it, and from the package directory it
 doesn't. Same tests, same code, one of them lying. The working directory isn't a
 convenience; it's the thing that decides whether a dependency is real or just
 invisible. A boundary you can walk across without noticing isn't a boundary.
+
+---
+
+I picked a "passing" border color by eye, #6F6559, and told you it cleared 3:1.
+It did — against the page. The input sits on a different surface, and against
+that one it was 2.91. A contrast ratio isn't a property of a color; it's a
+property of a *pair*, and every color has as many pairs as it has neighbours.
+The prototype's dark input border was 1.42:1 against the canvas: a field you
+could only find by already knowing it was there.
+
+---
+
+The demo worked in Firefox because it never navigated. One document, an overlay
+toggled by a class, a cloned title flying from one rectangle to another. I'd
+been asking how the browser did it and the answer was that the browser wasn't
+involved. A page transition you build inside a single page is a different
+animal from one that survives the document being thrown away — and the whole
+design argument turned out to be about which of those you can afford.
