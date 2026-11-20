@@ -7,8 +7,8 @@
 
 **Acceptance Criteria:**
 
-- [ ] `src/theme.ts` declares the semantic roles and `--site-*` extras with exactly ADR 0011's values and is passed to `layoutTokens({ theme })`; `packages/layout/src/tokens.ts` is untouched by the warm palette.
-- [ ] The contrast gate passes over the applied theme in both variants (ADR 0011 minimums: text 4.5:1, `--border-strong` 3:1 on every surface); every foreground/background pairing the hero, Combobox adapter and Button adapter actually use is covered by the gate.
+- [ ] `src/theme.ts` declares the semantic roles and `--site-*` extras with exactly ADR 0011's values (vendored Radix Sand / Tomato / Grass / Brown steps as literal hex, each commented with its step) and is passed to `layoutTokens({ theme })`; `packages/layout/src/tokens.ts` is untouched by the warm palette.
+- [ ] The contrast gate passes over the applied theme in both variants (ADR 0011 pairing rules: main/muted text 4.5:1 on every surface; accent-coloured text 4.5:1 on canvas, surface and tint, never on `subtle`; `--border-strong` 3:1 on canvas and surface); every foreground/background pairing the hero, Combobox adapter and Button adapter actually use is covered by the gate.
 - [ ] Controls (prompt input, buttons) take their boundary from `--border-strong`; `--border-subtle` appears only as decoration; the Silhouette stroke is `--site-ink-stroke` and ~0.25px thinner in dark; grain is `multiply` in light and `soft-light` at 2–3% in dark; the stream's edge fade is a `mask-image`, not an overlay (`docs/ui-guide.md`).
 - [ ] State is a text tag: the generated / guess / cached cues each carry words, never only color or a dashed border.
 - [ ] The hero composes `prompt | Silhouette | Thought Stream`; the Silhouette is `aria-hidden` decoration, never a container; the responsive collapse matches the prototype (mobile shrinks the Silhouette, the stream stacks below the prompt).

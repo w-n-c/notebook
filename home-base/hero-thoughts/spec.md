@@ -61,7 +61,7 @@ client-side affordances; their real backends arrive in Phase 3 (Orama) and Phase
 ### Theme
 - One warm identity, light and dark, declared by the site in `src/theme.ts` and
   applied through the library's `layoutTokens({ theme })` hook (ADR 0011).
-  Terracotta is the accent role; sage, ochre, blueprint and ink-stroke are
+  Terracotta (Radix Tomato on Sand) is the accent role; cached, building, ink-stroke and dashed are
   `--site-*` roles. No theme toggle. UI rules live in `docs/ui-guide.md`.
 
 ### Resolution ladder & coordinator
