@@ -10,13 +10,12 @@ echo / floating-chip language in this file has been replaced.
 
 The home page is a static text header followed by Featured Projects and Recent
 Notes. ADR 0002 defines the real product — queries resolved into Dynamic,
-Assembled, and Synthesized views — but there is no entry point to it, and the
-site ships static-only (no adapter). Phase 2 builds that entry point:
-**HeroThoughts**, a stateless search surface whose prompt settles a drifting
-column of thoughts onto the best-fit views, and which navigates to
-URL-addressed views. It ships static-only, with honest client-side stubs for the
-two tiers whose real backends arrive in Phase 3 (Orama) and Phase 5 (the LLM
-endpoint).
+Assembled, and Synthesized views — but there is no entry point to it. Phase 2
+builds that entry point: **HeroThoughts**, a stateless search surface whose
+prompt settles a drifting column of thoughts onto the best-fit views, and which
+navigates to URL-addressed views. The two tiers with no backend yet are honest
+client-side affordances; their real backends arrive in Phase 3 (Orama) and Phase
+5 (the LLM endpoint).
 
 ## Solution
 
@@ -71,10 +70,13 @@ endpoint).
   source without touching the UI.
 - `src/lib/navigation.ts` owns the URL rules (`?from=chat`, home detection).
 
-### Static-only boundary
-- No server adapter, no `/api` route in Phase 2. Tiers 2/3 are honest
-  client-side affordances ("wired in Phase 3/5"), not fake network calls. Front-
-  end code never holds a provider key.
+### Static by default, SSR allowed
+The site is static by default, but **static-only is not a goal** — ADR 0004
+retires the "static Astro site" framing; adapters, endpoints, and SSR are
+permitted when a workload actually needs them (Phase 3/5).
+- Phase 2 adds no backend: tiers 2/3 are honest client-side affordances ("wired
+  in Phase 3/5"), not fake network calls. Front-end code never holds a provider
+  key.
 
 ### Navigation, motion & continuity
 - Selecting an entry performs a **real navigation** to a URL-addressed page
@@ -82,12 +84,17 @@ endpoint).
   entry point, not a persistent chat shell.
 - Any page reached from chat carries `?from=chat` and renders a return CTA;
   pages without the param don't.
-- **View transitions** (ADR 0010): `@view-transition { navigation: auto }` plus
-  `view-transition-name` — the destination `<h1>` named statically, the clicked
-  stream title named in `pageswap`, and the home hero named so its
-  `::view-transition-old/new(hero)` pan out and back. Browsers without support
-  (Firefox stable until 162) get a plain navigation. Guarded by
-  `prefers-reduced-motion`.
+- **Cinematic navigation, no router** (ADR 0010 decision 4): real links, real
+  URL/back-forward/deep-links. Cross-document View Transitions
+  (`@view-transition { navigation: auto }` + `view-transition-name`) where
+  supported — the destination `<h1>` named statically, the clicked title named
+  in `pageswap`, the home hero named so its `::view-transition-old/new(hero)`
+  pan out and back. Where unsupported (Firefox), a `sessionStorage`-flagged
+  entrance/exit: a short exit before `location.assign`, then a parser-blocking
+  inline `<head>` script flies the `<h1>`/hero in from the source rect before
+  first paint. Both guarded by `prefers-reduced-motion`; the two paths never
+  both run. `.scratch/pwa-loading` tracks the offline/instant-load work that
+  closes the fallback's seam.
 
 ### Motion vocabulary
 - **Idle drift**: slow (~20px/s) vertical loop; pauses on hover/focus; freezes
@@ -114,7 +121,7 @@ endpoint).
 ## Out of Scope
 
 - Orama search index, entity ingestion, real three-tier resolution (Phase 3/5).
-- Any serverless endpoint or adapter (`astro.config.mjs` stays adapterless).
+- Server endpoints / SSR — deferred to the phases that need them (3/5); Phase 2 adds none.
 - Promoting motion to a Design System layer (component-local for now).
 - A combined "Feeds" page.
 
