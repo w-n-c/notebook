@@ -17,7 +17,7 @@ stays in `HeroSearch.svelte` (it styles elements `HeroSearch` owns).
 
 **Blocking Edges:** none.
 **Blocks:** agent-environment #03, hero-thoughts #07, #08.
-**Status:** `in-progress`
+**Status:** `done`
 
 **Acceptance Criteria:**
 
@@ -32,7 +32,13 @@ stays in `HeroSearch.svelte` (it styles elements `HeroSearch` owns).
       (16 ms frames for 1000 ms ≈ 22 px; a frame is capped at 48 ms; wrap is modulo
       the loop; `loopHeight <= 0` returns `y`). — `tests/drum.test.ts`, which also
       covers `createDrum`'s measurement and frame loop in happy-dom.
-- [ ] **Varied input.** One new e2e test runs the drum with **12** entries (not the
+- [ ] **Varied input — met at the module seam, by decision (2026-11-21).**
+      The page renders one idle list of five entries and nothing renders twelve,
+      so an e2e for 12 entries would need a fixture that exists only for the
+      test. The owner's decision: the varied input is the entry count itself,
+      proven where the drum actually answers to it — `tests/drum.test.ts`
+      asserts 5 entries → 3 copies in 432px and 12 entries → 2, plus the window
+      height (390×844 vs 1280×900) through the same `measure`. One new e2e test runs the drum with **12** entries (not the
       default five): the window is never empty at the bottom over one full loop and
       the window height does not change with the entry count.
       — **blocked, needs a decision.** The page has one idle list

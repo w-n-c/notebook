@@ -28,18 +28,28 @@ theme would still want it. Anything tied to this site's look stays in
 
 **Blocking Edges:** none.
 **Blocks:** hero-thoughts #07, #08, data-feeds #02, paper-texture #01.
-**Status:** `open` — **needs a grilling session with `docs/ui-guide.md` and the
-seed data open.**
+**Status:** `done` — decided in the 2026-11-21 grilling session; recorded in
+`docs/adr/0012-shared-visual-recipes.md`.
 
 **Acceptance Criteria:**
 
-- [ ] An ADR in `docs/adr/` records the mechanism, the library-vs-site rule, and
+- [x] An ADR in `docs/adr/` records the mechanism, the library-vs-site rule, and
       the rejected alternatives.
-- [ ] Every recipe in the seed data above is either shared (and its copies
+- [x] Every recipe in the seed data above is either shared (and its copies
       removed) or listed in the ADR as deliberately local, with the reason.
-- [ ] The CSS declaration counts above drop to **≤ 1** per shared recipe:
-      `rg -c '<declaration>' src` is checked for each.
-- [ ] A shared name that is mistyped or unknown fails a guardrail, as unknown
-      utility classes do today.
-- [ ] `CODING_STANDARDS.md` gains the rule: re-styling something a shared recipe
+      The ADR's table names `.site-brand`, `SectionHeader`'s resting link,
+      `StateTag`'s `data-state` ink and chip leading, and the two adapters.
+- [x] The CSS declaration counts above drop to **≤ 1** per shared recipe:
+      `rg -c '<declaration>' src` is checked for each, excluding the generated
+      `src/styles/recipes.css` and the adapters (ADR 0012, "Counts after the
+      migration"). Measured: muted 1 (`global.css` axiom), accent 1 (state),
+      `step--1` **0**, semibold 1 (state), `none` 1 (`.site-brand`),
+      `underline` 1 (state), offset 1 (`SectionHeader`), control border **0**,
+      `--focus-ring` in site CSS **0**. `tests/recipes.test.ts` enforces the
+      component half of that table on every run.
+- [x] A shared name that is mistyped or unknown fails a guardrail, as unknown
+      utility classes do today — no new rule was needed: the recipe classes are
+      in `ALLOWED_UTILITY_CLASSES` (spread from the generated
+      `scripts/lib/recipe-classes.ts`), so a typo is an unknown class.
+- [x] `CODING_STANDARDS.md` gains the rule: re-styling something a shared recipe
       or adapter already styles is a defect.
