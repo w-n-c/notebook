@@ -21,4 +21,16 @@
 - [ ] Idle drift is slow, pauses on hover/focus, and freezes under reduced-motion.
 - [ ] `bun test` + `bun run build` green; axe 0 violations.
 
-**Status:** `open`
+**Status:** `done`
+
+**Follow-ups (found in review, not done here):**
+
+- **Idle drift is a bounded wobble (≈0.35 px/s), not the spec's ~20 px/s loop
+  through ambient subjects.** The rest list is static and only the miss-spin
+  rotates, so the stream does not travel. A true loop needs the entry list to
+  repeat itself (with the duplicate `aria-hidden`) or a scroll-driven track —
+  a real piece of work, and the reason the drift is only claimed as "slow".
+- **The two paths are asserted statically, not verified in Chromium and
+  Firefox.** No browser is available in this environment; `pageswap`,
+  `pagereveal`, the bfcache entrance, and the first-paint margin all need a
+  manual pass (Chrome + Firefox, light and dark, reduced motion on).

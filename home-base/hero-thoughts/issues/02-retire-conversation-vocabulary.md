@@ -15,4 +15,4 @@
 - [ ] `tests/hero-thoughts.test.ts` and `tests/resolution.test.ts` are updated to assert the new names and the absence of the echo; no assertion is deleted without a replacement.
 - [ ] `bun test`, `bun run build`, `bun run typecheck` green; guardrails and axe pass.
 
-**Status:** `open`
+**Status:** `done`

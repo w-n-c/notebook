@@ -17,4 +17,4 @@
 - [ ] The hero-thoughts #04 fallback entrance still runs from a worker-served page, with no first-paint regression against the static baseline.
 - [ ] `bun test` + `bun run build` green; axe 0 violations.
 
-**Status:** `open`
+**Status:** `done`

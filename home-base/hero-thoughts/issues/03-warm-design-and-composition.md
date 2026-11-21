@@ -17,4 +17,4 @@
 - [ ] None of the prototype's architecture-voice filler (the eyebrow header and tag strings such as "Open Index Live Drift", `[SSR · GENERATE VIEW →]`) is ported; every visible string is real copy from the copy module.
 - [ ] Reduced-motion honoured; axe WCAG 2.1 AA 0 violations; guardrails green; no inline styles or bespoke classes in `src/pages/` or `src/layouts/`.
 
-**Status:** `open`
+**Status:** `done`

@@ -1,6 +1,6 @@
 # Specification: PWA Loading & Fast Navigation
 
-**Status**: `proposed`
+**Status**: `implemented`
 
 ## Problem Statement
 
@@ -55,4 +55,4 @@ hover/viewport prefetch (and prerender) so a click is instant. No SSR is require
 
 | Ticket | Title | Status |
 | --- | --- | --- |
-| 01 | Service worker shell & offline-capable navigation | open |
+| 01 | Service worker shell & offline-capable navigation | done |

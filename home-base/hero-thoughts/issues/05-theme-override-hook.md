@@ -14,4 +14,4 @@
 - [ ] The contrast gate (library tests and `tests/home-a11y.test.ts`) evaluates the library defaults with the theme applied, both variants, for `--text-main`/`--text-muted` on every surface, for accent-coloured text (`--text-accent` and theme extras flagged as accent text) on canvas, surface and the accent tint only, and for `--border-strong` at 3:1 on canvas and surface. (The library's own neutral `--border-strong` already passes: the palette is now vendored Radix Gray/Indigo and `tests/home-a11y.test.ts` gates it.)
 - [ ] The Theme glossary entry stays accurate (the library ships one neutral Theme, overridable); `bun test`, `bun run build`, `bun run typecheck` green.
 
-**Status:** `open`
+**Status:** `done`

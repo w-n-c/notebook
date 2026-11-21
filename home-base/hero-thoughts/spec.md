@@ -1,6 +1,6 @@
 # Specification: HeroThoughts — Warm Thought Stream (Phase 2)
 
-**Status**: `in-progress` — core (Ticket 01) landed on the old "conversational
+**Status**: `implemented` — core (Ticket 01) landed on the old "conversational
 head" premise; re-scoped after design exploration. Tickets 02–03 are the
 current work. ADR 0010 (Thought Stream, not a conversation or a mind map) and
 ADR 0011 (warm theme) now govern the direction; the earlier voice-line /
@@ -135,10 +135,10 @@ permitted when a workload actually needs them (Phase 3/5).
 | Ticket | Title | Status |
 | --- | --- | --- |
 | 01 | HeroThoughts core (head, swarm, ladder, seed, routes, CTA, nav, responsive) | done |
-| 02 | Retire the conversation vocabulary (shared seam: `?from=hero`, no echo, speech cue, renames) | open |
-| 03 | Warm design & composition (Silhouette + Thought Stream, theme, callouts) | open |
-| 04 | Cinematic navigation (drift, settle, view transitions + Firefox fallback) | open |
-| 05 | Theme override hook in `@w-n-c/layout` (shared seam, blocks 03) | open |
+| 02 | Retire the conversation vocabulary (shared seam: `?from=hero`, no echo, speech cue, renames) | done |
+| 03 | Warm design & composition (Silhouette + Thought Stream, theme, callouts) | done |
+| 04 | Cinematic navigation (drift, settle, view transitions + Firefox fallback) | done |
+| 05 | Theme override hook in `@w-n-c/layout` (shared seam, blocks 03) | done |
 
 The former conversation-restore ticket is **deleted** — the surface is
 stateless (ADR 0010).
