@@ -18,9 +18,11 @@ ticket 04 said "idle drift is slow"; the implementer reads the ticket.
       The implementer reads the cited lines before writing code.
 - [ ] A ticket whose spec has a numeric behaviour must repeat that number in its
       criteria (the spec is not guaranteed to be read, the ticket is).
-- [ ] The `grilling` skill's last step: "restate every behaviour we agreed as an
+- [x] (Done 2026-11-21 in `~/code/skills`, awaiting reinstall.) The `grilling` skill's last step: "restate every behaviour we agreed as an
       observable outcome with its number; anything that cannot be stated that way
       is not agreed yet."
 - [ ] `scripts/lib/issues.ts` (pure, unit-tested): flag, non-fatally, an
-      acceptance criterion that contains a vague-motion word (`slow`, `smooth`,
-      `calm`, `gentle`, `subtle`) and no digit. Warn in `ISSUES.md`; test it.
+      acceptance criterion that contains a vague word (`slow`, `smooth`, `calm`,
+      `gentle`, `subtle`, `seamless`, `fast`, `quick`, `soft`) and no digit. `visible`
+      is deliberately **not** on the list (too common in non-motion criteria). Warn
+      in `ISSUES.md`; test it with one failing and one passing fixture per word.
