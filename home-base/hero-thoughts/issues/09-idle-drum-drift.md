@@ -15,7 +15,7 @@ copy). The prototype is throwaway code: do not copy its structure.
 
 **Blocking Edges:** Blocked by browser-testing #01 for the motion leg's harness
 (if that has not landed, add the leg to `scripts/smoke.ts` as it stands).
-**Status:** `open`
+**Status:** `done`
 
 **Acceptance Criteria (each is observable in a browser; the number is the point):**
 

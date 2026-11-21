@@ -19,3 +19,4 @@
 - [ ] If a texture ships: reduced-data and forced-colors are handled; axe still 0 violations; no inline styles.
 
 **Status:** `open`
+**Blocked by:** hero-thoughts #10, design-system-architecture #08 and #09 (retro 2026-11)
