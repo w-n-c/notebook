@@ -33,7 +33,10 @@
 - [x] **Mobile.** At 390×844: no horizontal overflow (`bun run look / -- --narrow` reports `overflow: none`), the stream stacks below the prompt, the input is full width.
 - [x] **Other pages.** `bun run shot /notes/` and `/projects/` before and after are in `.scratch/shots/`, with no overflow, no clipped text, and axe at 0 violations (headings are now serif site-wide).
 - [x] **Gates.** Axe WCAG 2.1 AA reports 0 violations on `/`; the contrast gate passes for every new foreground/background pairing; guardrails and `bun run smoke` stay green; no inline `style=`, no bespoke classes in `src/pages/` or `src/layouts/`.
-- [ ] **Sign-off.** `bun run shot /` at 1280×900 and at `--narrow`, saved beside the prototype's Warm render in `.scratch/shots/` (`proto-warm-1280.png` exists); the status stays `in-progress` until the owner approves them.
+- [ ] **Sign-off.** `bun run shot /` at 1280×900 and at `--narrow`, saved beside the prototype's Warm render in `.scratch/shots/` (`proto-warm-1280.png` exists); the status stays `in-progress` until the owner approves them. **Shots for approval:**
+  `.scratch/shots/home-final-1280.png`, `.scratch/shots/home-final-390.png`
+  (beside `proto-warm-1280.png` / `proto-warm-390.png`), taken against the
+  final paper canvas after paper-texture #01.
 
 **Decided at sign-off — CLS budget 0.05, not 0.02.** The remaining shift is the
 `ch` measure doing its job: a late swap moves every `ch`-measured column because
@@ -42,5 +45,16 @@ delayed 300ms, 0 on a warm load. Google's Core Web Vitals call < 0.1 "good", so
 the budget is set at half of that: the reflow is accepted rather than hidden by
 re-binding `--measure` to `rem` (a library violation, reverted in 5f9aecb) or by
 matching `size-adjust` to `ch` (which costs a 24%-oversized fallback).
+
+**Re-measured against the final tones (2026-11-21, after paper-texture #01).**
+`bun run smoke -- --all` is green, including every home-fidelity leg: the
+80–84px stream pitch, 24–26px serif titles, the 50–58px prompt at 8–12px radius
+bounded by `--border-strong`, the 56–64px header pill, the 270–300px silhouette
+and the 0.25px-thinner dark stroke. The silhouette clears its 7:1 house rule on
+the new canvas at 14.97:1 (light) / 15.05:1 (dark), and `bun run look / --
+--narrow` reports `overflow: none` at 390×844. The two other pages are re-shot
+with the new tones for the same approval: `.scratch/shots/notes-final-1280.png`
+and `.scratch/shots/projects-final-1280.png` (no overflow, nothing clipped, axe
+still 0 violations); nothing in this diff changes their type or layout.
 
 **Status:** `in-progress`
