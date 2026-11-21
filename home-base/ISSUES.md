@@ -51,3 +51,14 @@
 | site-foundations | 02 | Notes Content Collection with Index and Reader Route | done | 01 |
 | site-foundations | 03 | Projects Case Study Collection with Portfolio Grid | done | 01 |
 | site-foundations | 04 | Home Page Landing Bio and Accessibility Gate | done | 02, 03 |
+
+## Vague acceptance criteria
+
+> Non-fatal: a criterion a stranger cannot check in a browser or a test.
+> State the number and how it is observed.
+
+- `agent-environment/02` — slow, smooth, calm: `docs/agents/issue-tracker.md` → Ticket Format: every **Acceptance Criterion is an outcome a stranger could check in a browser or a test**, carries the number if the grill produced one (px/s, ms, count, size), and says *how it is observed*. "Slow", "smooth", "calm", "visible" alone fail.
+- `agent-environment/02` — slow, smooth, calm, gentle, subtle, seamless, fast, quick, soft: `scripts/lib/issues.ts` (pure, unit-tested): flag, non-fatally, an acceptance criterion that contains a vague word (`slow`, `smooth`, `calm`, `gentle`, `subtle`, `seamless`, `fast`, `quick`, `soft`) and no digit. `visible` is deliberately **not** on the list (too common in non-motion criteria). Warn in `ISSUES.md`; test it with one failing and one passing fixture per word.
+- `design-system-architecture/01` — fast, slow: `src/types/tokens.ts` defines the **Motion System** (`durations`: `instant`, `fast`, `normal`, `slow`; `easings`: `out`, `in-out`, `spring`).
+- `hero-thoughts/04` — slow: Idle drift is slow, pauses on hover/focus, and freezes under reduced-motion.
+- `hero-thoughts/05` — subtle: `layoutTokens({ theme })` accepts `{ light, dark }` pairs for the semantic roles only (surface canvas/surface/subtle/accent; text main/muted/accent; border subtle/strong/accent; focus ring) — the type rejects palette steps and unknown roles.
