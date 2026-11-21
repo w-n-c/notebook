@@ -3,38 +3,45 @@
 **What to build:** cut the output the gate and hooks pour into agent context,
 and stop agents inventing servers. Mechanical; one commit per bullet.
 
-**Status:** `open`
+**Status:** `done`
 
 **Acceptance Criteria:**
 
-- [ ] **Quiet runner.** `scripts/ci.sh` and `scripts/git-guardrails.sh` run each
+_Verified 2026-11-21: every bullet below already held in the tree; the one
+number this ticket asked for ("about **4s**" in `docs/agents/verification.md`)
+was retired by agent-environment #05 in the same session, which deletes measured
+durations from prose. The two tickets contradict each other on that point; #05 is
+later and is the retro's decision, so the number is gone and the note keeps
+"the cost is the output, not the time"._
+
+- [x] **Quiet runner.** `scripts/ci.sh` and `scripts/git-guardrails.sh` run each
       step through a small shell helper that captures stdout+stderr to a temp file
       and prints one line (`✓ Typecheck (1.2s)`), dumping the captured output only
       on failure. Observed: a green `bash scripts/ci.sh` prints only lines of the
       form `✓ <step> (<n.n>s)`; `VERBOSE=1` prints full output.
-- [ ] **Failures only.** Every `bun test` invocation in the scripts has
+- [x] **Failures only.** Every `bun test` invocation in the scripts has
       `--only-failures`. Observed: `rg 'bun .*test' scripts/*.sh` shows the flag on
       every match; breaking one test on purpose produces a failure dump of **fewer
       than 60 lines**.
-- [ ] **No whole-page failures.** `tests/lib/expect-text.ts` exports
+- [x] **No whole-page failures.** `tests/lib/expect-text.ts` exports
       `expectIncludes(haystack, needle, label)`; on failure it prints the label and
       an excerpt of **at most 200 characters**, never the whole string. A unit test
       fails it on a 50 KB haystack and asserts the message is under 400 characters.
       `tests/hero-thoughts.test.ts`, `tests/view-transition.test.ts` and
       `tests/page-shell.test.ts` use it; `rg 'expect\(html\)\.(not\.)?toContain'`
       has no matches in those files.
-- [ ] **Smoke in the hook, scoped.** `scripts/git-guardrails.sh` runs build + the
+- [x] **Smoke in the hook, scoped.** `scripts/git-guardrails.sh` runs build + the
       Chromium smoke only when a staged path starts with `src/`, `public/`,
       `packages/layout/`, `e2e/`, `scripts/lib/` or equals `astro.config.mjs`,
       `playwright.config.ts`, `scripts/smoke.ts`, `package.json`, `bun.lock`.
       Observed: a docs-only scratch commit prints no smoke line; a commit touching
       `src/` does. (The smoke itself is built in browser-testing #02; until that
       lands the hook calls the current `bun run smoke`.)
-- [ ] **Targeted runs documented.** `docs/agents/` has a short "While implementing"
+- [x] **Targeted runs documented.** `docs/agents/` has a short "While implementing"
       note: run the test files you changed (`bun test tests/x.test.ts`) and
       `bun run typecheck`; the full gate runs once at the end and again in the hook.
       The note states the suite takes about **4s** (the cost is output, not time).
-- [ ] **The real server, documented.** `AGENTS.md` gains a `### Running the site`
+- [x] **The real server, documented.** `AGENTS.md` gains a `### Running the site`
       heading with exactly: "Serve the built site with `bun run preview`; never
       `python -m http.server` or an ad hoc server. For dev, run `bun run dev:log`
       in the background and read `.scratch/dev.log` for errors." `package.json` has

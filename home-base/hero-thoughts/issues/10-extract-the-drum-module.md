@@ -17,26 +17,36 @@ stays in `HeroSearch.svelte` (it styles elements `HeroSearch` owns).
 
 **Blocking Edges:** none.
 **Blocks:** agent-environment #03, hero-thoughts #07, #08.
-**Status:** `open`
+**Status:** `in-progress`
 
 **Acceptance Criteria:**
 
-- [ ] `wc -l src/components/HeroSearch.svelte` reports **≤ 600** (goal ≤ 520).
-- [ ] `rg 'driftY|driftLoop|requestAnimationFrame|wheel' src/components/HeroSearch.svelte`
+- [x] `wc -l src/components/HeroSearch.svelte` reports **≤ 600** (goal ≤ 520).
+      — 566.
+- [x] `rg 'driftY|driftLoop|requestAnimationFrame|wheel' src/components/HeroSearch.svelte`
       finds **0** matches.
-- [ ] `bun run smoke` and `e2e/motion.spec.ts` pass **unchanged**; the drum still
+- [x] `bun run smoke` and `e2e/motion.spec.ts` pass **unchanged**; the drum still
       moves **36–52 px upward in 2000 ms** (22 px/s), and the other numeric
       criteria of hero #09 still hold.
-- [ ] The pure drift functions have unit tests with literal expected values
+- [x] The pure drift functions have unit tests with literal expected values
       (16 ms frames for 1000 ms ≈ 22 px; a frame is capped at 48 ms; wrap is modulo
-      the loop; `loopHeight <= 0` returns `y`).
+      the loop; `loopHeight <= 0` returns `y`). — `tests/drum.test.ts`, which also
+      covers `createDrum`'s measurement and frame loop in happy-dom.
 - [ ] **Varied input.** One new e2e test runs the drum with **12** entries (not the
       default five): the window is never empty at the bottom over one full loop and
       the window height does not change with the entry count.
+      — **blocked, needs a decision.** The page has one idle list
+      (`idleSuggestions(seedCatalog)`: five entries) and no surface that renders
+      twelve; `e2e/motion.spec.ts` cannot create them without a fixture. Covered at
+      the module seam instead (`createDrum` reports 2 copies for a 12-entry list,
+      3 for the default five, in `tests/drum.test.ts`). Options put to the owner:
+      a `?entries=` fixture on the island, a build-time fixture route, or the
+      varied input being the window (viewport) rather than the count.
 - [ ] After this and hero #06 land, re-measure `HeroSearch.svelte`. Split it
       further **only along a seam with its own interface and a second reason to
-      exist**, never to satisfy the 300-line warning.
-- [ ] Hero #09 is set to `done` (its criteria map to `e2e/motion.spec.ts`: travels,
+      exist**, never to satisfy the 300-line warning. — hero #06 is still open, so
+      this is deferred; nothing was split to hit a line count.
+- [x] Hero #09 is set to `done` (its criteria map to `e2e/motion.spec.ts`: travels,
       loops, pauses, reduced motion, only at rest, accessible).
 
 **Do not:** change the drum's speed, add a viewport media query, move the decoys

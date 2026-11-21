@@ -6,12 +6,12 @@ Delete it. `HeroSearch.svelte`'s `:focus-within` rule stays: the input's own
 outline is deliberately `none` (`Combobox.svelte:197`).
 
 **Blocking Edges:** none.
-**Status:** `open`
+**Status:** `done`
 
 **Acceptance Criteria:**
 
-- [ ] `rg 'focus-ring' src/components/ui/Combobox.svelte` finds **0** matches.
-- [ ] With keyboard focus on a stream entry, the outline is **2px** solid
+- [x] `rg 'focus-ring' src/components/ui/Combobox.svelte` finds **0** matches.
+- [x] With keyboard focus on a stream entry, the outline is **2px** solid
       `--focus-ring` with **2px** offset, sampled via `getComputedStyle` in a
       `probe` or spec; `bun run shot / '[data-hero]'` shows the ring.
-- [ ] `bun test` and `bun run smoke` pass.
+- [x] `bun test` and `bun run smoke` pass.

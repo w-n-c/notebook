@@ -4,13 +4,13 @@
 `position:`. Rule id `positioning`, **empty allow-list**.
 
 **Blocking Edges:** Blocked by design-system-architecture #08.
-**Status:** `open`
+**Status:** `done`
 
 **Acceptance Criteria:**
 
-- [ ] Flags `position:\s*(absolute|fixed|sticky|relative)` in `.astro` and
+- [x] Flags `position:\s*(absolute|fixed|sticky|relative)` in `.astro` and
       `.svelte` under `src/` and `packages/`; `position: static` passes. CSS
       strings in `.ts` files are not scanned.
-- [ ] `tests/guardrails.test.ts`: a fixture per flagged value and one passing
+- [x] `tests/guardrails.test.ts`: a fixture per flagged value and one passing
       `position: static`.
-- [ ] The live-tree scan passes, with **0** allow-list entries.
+- [x] The live-tree scan passes, with **0** allow-list entries.
