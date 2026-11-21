@@ -19,20 +19,20 @@
 
 **Acceptance Criteria** (measured at 1280×900 in real Chromium unless stated; sampled with `probe()` (`e2e/lib/look.ts`) using `getComputedStyle` / `getBoundingClientRect`):
 
-- [ ] **Fonts.** `getComputedStyle(body).fontFamily` starts with `"DM Sans"`; a stream title's and `h1`'s start with `Newsreader`; the speech line is italic Newsreader. `document.fonts.check()` is true for all three faces after load.
-- [ ] **Font budget.** Newsreader roman + italic and DM Sans are latin-subset woff2 totalling **≤ 160 KB**, `font-display: swap`, with a metric-adjusted fallback (`size-adjust`/`ascent-override`); static 400/500 weights are the fallback plan if the variable files exceed the budget. Cumulative layout shift on `/` is **< 0.02**.
-- [ ] **Offline.** The fonts are in the service worker precache; the offline leg of `bun run smoke` reloads `/` and `/notes/` offline and `document.fonts.check()` is still true.
-- [ ] **Left edge.** The hero's prompt left edge equals the brand link's left edge (**±1px**). No element on `/` has a visible box edge from the old hero container (no boxed ~700px column).
-- [ ] **Fit.** At 1280×900 `/` needs no vertical scroll (`document.scrollingElement.scrollHeight <= innerHeight`), with the social links below the hero.
-- [ ] **Prompt.** Input block-size **50–58px**; computed `border-radius` **8–12px**; border colour equals `--border-strong`; no `Box` wrapper or Ask pill remains; a `↵` button inside the input has accessible name "Ask".
-- [ ] **Clear.** The Clear button is **not in the DOM** on first paint, and is present after typing a character or after a submit; it renders as a text button (no fill, no border-radius ≥ 999px pill).
-- [ ] **Header.** Block-size **56–64px**, `border-block-end` 1px, DM Sans, translucent canvas. The current-page link has computed `border-radius` **≥ 999px**, a filled background, and `aria-current="page"`; there is no theme switcher and no suggestion chips.
-- [ ] **Stream.** Distance between consecutive entries' tops is **80–84px**; no entry has a bottom hairline; titles are Newsreader at **24–26px**; the idle drum still moves **36–52px** in 2000ms (hero-thoughts #09 spec unchanged and still passing).
-- [ ] **Silhouette.** Visible profile height **270–300px**; stroke colour is the `--site-ink-stroke` value, which is within a contrast ratio of **≥ 7:1** against the canvas (near-ink); the dark stroke is still ~0.25px thinner than light.
-- [ ] **Docs.** `docs/agents/ui.md` rule 4 and the `docs/ui-guide.md` "Light strokes on dark" section drop the "silverpoint / softer ink" reasoning and describe the near-ink stroke (the dark variant keeps its thinner width); the "Silverpoint, not chalk" comment in `HeroThoughts.astro` is rewritten to match.
-- [ ] **Mobile.** At 390×844: no horizontal overflow (`bun run look / -- --narrow` reports `overflow: none`), the stream stacks below the prompt, the input is full width.
-- [ ] **Other pages.** `bun run shot /notes/` and `/projects/` before and after are in `.scratch/shots/`, with no overflow, no clipped text, and axe at 0 violations (headings are now serif site-wide).
-- [ ] **Gates.** Axe WCAG 2.1 AA reports 0 violations on `/`; the contrast gate passes for every new foreground/background pairing; guardrails and `bun run smoke` stay green; no inline `style=`, no bespoke classes in `src/pages/` or `src/layouts/`.
+- [x] **Fonts.** `getComputedStyle(body).fontFamily` starts with `"DM Sans"`; a stream title's and `h1`'s start with `Newsreader`; the speech line is italic Newsreader. `document.fonts.check()` is true for all three faces after load.
+- [x] **Font budget.** Newsreader roman + italic and DM Sans are latin-subset woff2 totalling **≤ 160 KB**, `font-display: swap`, with a metric-adjusted fallback (`size-adjust`/`ascent-override`); static 400/500 weights are the fallback plan if the variable files exceed the budget. Cumulative layout shift on `/` is **< 0.02**.
+- [x] **Offline.** The fonts are in the service worker precache; the offline leg of `bun run smoke` reloads `/` and `/notes/` offline and `document.fonts.check()` is still true.
+- [x] **Left edge.** The hero's prompt left edge equals the brand link's left edge (**±1px**). No element on `/` has a visible box edge from the old hero container (no boxed ~700px column).
+- [x] **Fit.** At 1280×900 `/` needs no vertical scroll (`document.scrollingElement.scrollHeight <= innerHeight`), with the social links below the hero.
+- [x] **Prompt.** Input block-size **50–58px**; computed `border-radius` **8–12px**; border colour equals `--border-strong`; no `Box` wrapper or Ask pill remains; a `↵` button inside the input has accessible name "Ask".
+- [x] **Clear.** The Clear button is **not in the DOM** on first paint, and is present after typing a character or after a submit; it renders as a text button (no fill, no border-radius ≥ 999px pill).
+- [x] **Header.** Block-size **56–64px**, `border-block-end` 1px, DM Sans, translucent canvas. The current-page link has computed `border-radius` **≥ 999px**, a filled background, and `aria-current="page"`; there is no theme switcher and no suggestion chips.
+- [x] **Stream.** Distance between consecutive entries' tops is **80–84px**; no entry has a bottom hairline; titles are Newsreader at **24–26px**; the idle drum still moves **36–52px** in 2000ms (hero-thoughts #09 spec unchanged and still passing).
+- [x] **Silhouette.** Visible profile height **270–300px**; stroke colour is the `--site-ink-stroke` value, which is within a contrast ratio of **≥ 7:1** against the canvas (near-ink); the dark stroke is still ~0.25px thinner than light.
+- [x] **Docs.** `docs/agents/ui.md` rule 4 and the `docs/ui-guide.md` "Light strokes on dark" section drop the "silverpoint / softer ink" reasoning and describe the near-ink stroke (the dark variant keeps its thinner width); the "Silverpoint, not chalk" comment in `HeroThoughts.astro` is rewritten to match.
+- [x] **Mobile.** At 390×844: no horizontal overflow (`bun run look / -- --narrow` reports `overflow: none`), the stream stacks below the prompt, the input is full width.
+- [x] **Other pages.** `bun run shot /notes/` and `/projects/` before and after are in `.scratch/shots/`, with no overflow, no clipped text, and axe at 0 violations (headings are now serif site-wide).
+- [x] **Gates.** Axe WCAG 2.1 AA reports 0 violations on `/`; the contrast gate passes for every new foreground/background pairing; guardrails and `bun run smoke` stay green; no inline `style=`, no bespoke classes in `src/pages/` or `src/layouts/`.
 - [ ] **Sign-off.** `bun run shot /` at 1280×900 and at `--narrow`, saved beside the prototype's Warm render in `.scratch/shots/` (`proto-warm-1280.png` exists); the status stays `in-progress` until the owner approves them.
 
-**Status:** `open`
+**Status:** `in-progress`

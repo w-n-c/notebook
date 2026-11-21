@@ -102,3 +102,21 @@ hover — broke it. The honest fixes were to invent a `.link-plain` class whose
 whole job is to undo `.link`, or to admit the count was the wrong proxy for "no
 component re-styles a shared recipe". A class that exists to stop another class
 from applying is not a recipe; it is a lawsuit inside the cascade.
+
+---
+
+The font swap cost 0.038 of CLS and every millisecond of it came from a unit
+nobody thinks of as a font: `ch`. The library's measures are "85 characters", so
+in a layout that is font-relative, "how wide is the column" is answered by
+whichever font happens to be loaded, and swapping the type re-measures the page.
+The fix was to freeze 85ch into 57rem and take the font out of the geometry —
+the modest, unglamorous realisation that a design system's most innocent token
+was carrying the font into the layout, and that "characters" is a lovely name
+for a length that is only true for one typeface at one size.
+
+There was a companion bug with a straighter face: the preloads rendered as
+`<link rel="preload" as="font" crossorigin>` with no href at all. An asset import
+typed one property too deep compiles to an empty string; the build is green, the
+tag is present, the network does nothing. A test now asserts three `.woff2` hrefs
+in the built HTML, because "the tag exists" and "the tag points somewhere" are
+the same sentence right up until they aren't.
