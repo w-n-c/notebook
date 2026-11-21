@@ -82,3 +82,23 @@ been asking how the browser did it and the answer was that the browser wasn't
 involved. A page transition you build inside a single page is a different
 animal from one that survives the document being thrown away — and the whole
 design argument turned out to be about which of those you can afford.
+
+---
+
+The recipe conversation kept circling one question: is a shared visual fact a
+value or a role? A composite token answers "value": `--focus-outline` is width,
+style and colour travelling under one name, and because it is written as a
+reference rather than a resolved string, it follows a theme switch instead of
+remembering the theme it was born in. A class answers "role": `.text-muted` says
+what the text *is*, which is why it is called muted and not `sm`. The tempting
+middle — a class that bundles both, `.text-caption` = size plus ink — died on a
+single counter-example: one of the five caption sites wanted the size without
+the ink, so the bundle was already a lie at the moment it was written.
+
+Then the smaller one, which I keep thinking about as the shape of a rule
+resisting its own metric: we wanted "no declaration appears more than once", and
+the brand link — the one link on the site that never underlines, not even on
+hover — broke it. The honest fixes were to invent a `.link-plain` class whose
+whole job is to undo `.link`, or to admit the count was the wrong proxy for "no
+component re-styles a shared recipe". A class that exists to stop another class
+from applying is not a recipe; it is a lawsuit inside the cascade.
