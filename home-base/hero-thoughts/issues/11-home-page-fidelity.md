@@ -60,4 +60,10 @@ with the new tones for the same approval: `.scratch/shots/notes-final-1280.png`
 and `.scratch/shots/projects-final-1280.png` (no overflow, nothing clipped, axe
 still 0 violations); nothing in this diff changes their type or layout.
 
+**Note for the next pass (not a blocker):** `HeroSearch.svelte` is at 589 lines,
+just under the guardrail's 600-line error (warn over 300). The portrait zone is
+now its own idea — cue, swoosh, head — and it is the natural next extraction: a
+`PortraitZone.svelte` taking the cue text, the guess tag and the silhouette
+snippet would take the island back to ~560 and give the phone order one home.
+
 **Status:** `in-progress`
