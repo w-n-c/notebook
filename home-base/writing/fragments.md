@@ -120,3 +120,26 @@ typed one property too deep compiles to an empty string; the build is green, the
 tag is present, the network does nothing. A test now asserts three `.woff2` hrefs
 in the built HTML, because "the tag exists" and "the tag points somewhere" are
 the same sentence right up until they aren't.
+
+A blend mode has a neutral point, and it is not negotiable. `multiply` is
+invisible on white; `overlay` is invisible on mid-grey. One tile, therefore,
+can only be honest in one of the two schemes — in the other it is either a veil
+or a no-op, and no amount of tuning the alpha rescues it, because the arithmetic
+is symmetric and the page is not. Cutting the difference produced the worst of
+both: a cream canvas dimmed by five grey levels (a veil you can feel but not
+name) and a charcoal canvas moved by half a level (grain you cannot see at all).
+The measurement that ended the argument was not aesthetic. It was: *the dark
+page has never shown any grain*. Once you know the number, "one sheet of paper"
+turns out to be a claim about a lattice, not a file count.
+
+Meanwhile the phone taught a smaller lesson. The composition had been
+`prompt | head | stream`, and when it collapsed it stacked in that order — the
+machine asked before the face had said anything. Moving the cue to the left of
+the head fixed the reading order, and then the reading order fixed the DOM: the
+portrait now leads in markup, because the narrow layout is the one with a
+sequence a screen reader can hear. The wide stage, three columns abreast, has no
+reading order to disagree with, so a single container query puts the prompt
+first there and nowhere else. It is the only ordering rule in the hero, and it
+sits at the primitive's own threshold — the width where the zones were already
+going to stack — which is the trick that keeps two mechanisms from drifting
+apart: give the second one the first one's number.
