@@ -35,7 +35,7 @@
 - [x] **Mobile.** At 390×844: no horizontal overflow (`bun run look / -- --narrow` reports `overflow: none`), the composition reads top-down — **cue and head, then the prompt, then the stream** — with the cue to the left of the head (one row), and the input full width.
 - [x] **Other pages.** `bun run shot /notes/` and `/projects/` before and after are in `.scratch/shots/`, with no overflow, no clipped text, and axe at 0 violations (headings are now serif site-wide).
 - [x] **Gates.** Axe WCAG 2.1 AA reports 0 violations on `/`; the contrast gate passes for every new foreground/background pairing; guardrails and `bun run smoke` stay green; no inline `style=`, no bespoke classes in `src/pages/` or `src/layouts/`.
-- [ ] **Sign-off.** `bun run shot /` at 1280×900 and at `--narrow`, saved beside the prototype's Warm render in `.scratch/shots/` (`proto-warm-1280.png` exists); the status stays `in-progress` until the owner approves them. **Shots for approval:**
+- [x] **Sign-off.** `bun run shot /` at 1280×900 and at `--narrow`, saved beside the prototype's Warm render in `.scratch/shots/` (`proto-warm-1280.png` exists); the status stays `in-progress` until the owner approves them. **Shots for approval:**
   `.scratch/shots/home-final-1280.png`, `.scratch/shots/home-final-390.png`
   (beside `proto-warm-1280.png` / `proto-warm-390.png`), taken against the
   final paper canvas after paper-texture #01.
@@ -66,4 +66,4 @@ now its own idea — cue, swoosh, head — and it is the natural next extraction
 `PortraitZone.svelte` taking the cue text, the guess tag and the silhouette
 snippet would take the island back to ~560 and give the phone order one home.
 
-**Status:** `in-progress`
+**Status:** `done` — owner approved the sign-off shots (2026-11-24).

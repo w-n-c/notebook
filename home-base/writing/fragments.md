@@ -143,3 +143,45 @@ first there and nowhere else. It is the only ordering rule in the hero, and it
 sits at the primitive's own threshold — the width where the zones were already
 going to stack — which is the trick that keeps two mechanisms from drifting
 apart: give the second one the first one's number.
+
+---
+
+The repo had thirteen rules about how a file is written and none about where it
+lives. That is not an oversight, it is a gradient: every rule we ever added was
+a response to something that had visibly gone wrong, and a file in the wrong
+folder never goes wrong. It just sits there, correct, while the idea it belongs
+to gets smeared across two directories by file extension. The hero was ten files
+in `components/` and a flat `lib/`, and the only thing that ever complained was
+a size warning that said *this file is long*, which was true and beside the point.
+
+The word we reached for was "slice", and it was already taken three times over:
+the glossary entries for a Phase, a Feature and an Issue each carry it in their
+_Avoid_ line, because past agent work had used it for all three. So the *act* got the verb (we **colocate**) and the unit
+got a noun nobody had used yet (a **Region**). It is a small thing to name a
+folder; it is a larger thing to find out that the vocabulary you are about to
+spend is already in circulation under three other meanings.
+
+---
+
+We nearly put the page chrome in `src/layouts/`, because Astro's convention says
+that is where a layout's furniture goes. It would have failed the commit hook. An
+earlier decision had quietly annexed the directory: `layouts/` and `pages/` are
+pure composition, no `<style>`, ever, and both `SiteHeader` and `SiteNav` carry
+one. A framework's folder had stopped meaning what the framework said it meant,
+and the only record was a guardrail and an ADR three numbers back. The lesson is
+not "read the ADRs". It is that a convention you have enforced is no longer a
+convention, it is a local law with a borrowed name, and the way to stay out of
+its way is to leave the borrowed names alone and build your own directory beside
+them.
+
+---
+
+The one-line rule, for the next time someone asks where a file goes: *it lives
+with the only thing that uses it, and it moves out when a second thing does or
+when the repo has promised to police that kind of file.* The second clause is the
+one that took an argument. "Shared because we might reuse it" sounds like
+foresight and is the exact mechanism that built the flat folders we were
+cleaning up. The adapters in `ui/` are shared for a different reason: not
+because someone predicted reuse, but because guardrails and ADRs
+already hold that path in place. A prediction is free to make and impossible to
+check. A guardrail is neither.
