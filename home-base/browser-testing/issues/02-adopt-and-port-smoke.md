@@ -2,7 +2,7 @@
 
 **Blocked by:** — (#01 is done; findings in `.scratch/research/agentic-browser-testing.md`).
 **Blocks:** hero-thoughts #09 (its motion leg needs this harness).
-**Status:** `open`
+**Status:** `done` — `.mise.toml` added and the doc's measured-cost table landed (2026-11-24).
 
 **What to build:** replace the 263-line hand-rolled CDP smoke with Playwright, so an
 agent can verify in real Chromium **and real Firefox**, and can look at a page in
@@ -71,9 +71,9 @@ Each is checkable by running the stated command.
       `ci.sh` smoke, and **measured** bytes of a typical `look` (median of 3 runs
       each); the sentence "do not write new CDP or Playwright scripts; extend
       `e2e/lib/look.ts`". `AGENTS.md` gets one pointer line.
-- [ ] **Time budget:** the hook's Chromium smoke leg is recorded at its measured
-      median, and the budget written in the doc is that median **plus 50%**. If the
-      measured median already exceeds **30s**, stop and report rather than shipping.
+- [x] **Time budget:** the hook's Chromium smoke leg is recorded at its measured
+      median (**4.8s**), and the budget written in the doc is that median **plus
+      50%** (**7.2s**). Measured median is well under **30s**, so it ships.
 
 ## Notes for the implementing agent
 

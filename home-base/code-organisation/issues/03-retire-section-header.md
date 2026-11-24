@@ -11,9 +11,11 @@ ticket in the feature that changes a test assertion, which is why it stands alon
 
 **Acceptance Criteria:**
 
-- [ ] Before deleting, `rg -l SectionHeader src` lists only
+- [x] Before deleting, `rg -l 'SectionHeader|section-link' src` lists only
       `src/components/SectionHeader.astro` itself (0 consumers). If anything else
-      appears, stop and report instead of deleting.
+      appears, stop and report instead of deleting. (`rg -l SectionHeader src`
+      alone returns nothing at all — the component names its class
+      `.section-link`, never its own filename — so the class is in the pattern.)
 - [ ] `src/components/SectionHeader.astro` is deleted and
       `rg -n 'SectionHeader|section-link' src tests e2e scripts docs/agents GLOSSARY.md CODING_STANDARDS.md` returns **0** hits.
 - [ ] The `tests/recipes.test.ts` assertion that named `SectionHeader.astro` now
