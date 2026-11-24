@@ -6,7 +6,7 @@ can match), so it belongs in `CODING_STANDARDS.md` and not in a guardrail. This 
 the yardstick for tickets #10 and #11.
 
 **Blocked by:** None (can start immediately).
-**Status:** `open`
+**Status:** `done`
 
 **Acceptance Criteria:**
 

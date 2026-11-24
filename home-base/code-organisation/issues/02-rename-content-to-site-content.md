@@ -7,7 +7,7 @@ shape change. This is also the prefactor for the Hero and shell moves, which edi
 the same importers. See ADR 0013 decision 8.
 
 **Blocked by:** None (can start immediately).
-**Status:** `open`
+**Status:** `done`
 
 **Acceptance Criteria:**
 

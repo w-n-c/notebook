@@ -7,7 +7,7 @@ exactly that. After this ticket no file keeps its own offset. This is the only
 ticket in the feature that changes a test assertion, which is why it stands alone.
 
 **Blocked by:** None (can start immediately).
-**Status:** `open`
+**Status:** `done`
 
 **Acceptance Criteria:**
 
