@@ -6,4 +6,4 @@ work, cross-referenced so this feature can be read on its own).
 
 **Blocking Edges:** Blocked by #01.
 **Status:** `open`
-**Blocked by:** hero-thoughts #10, design-system-architecture #08 and #09 (retro 2026-11)
+**Blocked by:** hero-thoughts/10, design-system-architecture/08, design-system-architecture/09 (retro 2026-11)

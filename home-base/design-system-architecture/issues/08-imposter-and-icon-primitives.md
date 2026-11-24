@@ -10,7 +10,7 @@ and is out of scope.
 behaviour only, not conventions.
 
 **Blocking Edges:** none.
-**Blocks:** agent-environment #08, hero-thoughts #07, #08, data-feeds #02, paper-texture #01.
+**Blocks:** agent-environment/08, hero-thoughts/07, hero-thoughts/08, data-feeds/02, paper-texture/01.
 **Status:** `done`
 
 **Acceptance Criteria:**

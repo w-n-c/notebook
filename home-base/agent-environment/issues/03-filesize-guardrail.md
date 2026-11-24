@@ -5,7 +5,7 @@ component cannot silently grow to 700 lines (`HeroSearch.svelte` did).
 `GuardrailViolation` gains `severity: 'warn' | 'error'`; `scripts/check-guardrails.ts`
 prints warnings and fails only on errors.
 
-**Blocking Edges:** Blocked by hero-thoughts #10 (`HeroSearch.svelte` is 701 lines).
+**Blocking Edges:** Blocked by hero-thoughts/10 (`HeroSearch.svelte` is 701 lines).
 **Status:** `done`
 
 **Acceptance Criteria:**

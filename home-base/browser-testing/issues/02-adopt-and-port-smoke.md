@@ -1,7 +1,7 @@
 # 02 — Adopt Playwright and Port `smoke.ts`
 
 **Blocked by:** — (#01 is done; findings in `.scratch/research/agentic-browser-testing.md`).
-**Blocks:** hero-thoughts #09 (its motion leg needs this harness).
+**Blocks:** hero-thoughts/09 (its motion leg needs this harness).
 **Status:** `done` — `.mise.toml` added and the doc's measured-cost table landed (2026-11-24).
 
 **What to build:** replace the 263-line hand-rolled CDP smoke with Playwright, so an

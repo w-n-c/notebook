@@ -4,8 +4,8 @@
 
 **Priority:** high
 
-**Blocking Edges:** none. Blocked-by #10 (hero-thoughts), #08 and #09 (design-system-architecture) are all `done`.
-**Blocks:** hero-thoughts #11 (home page fidelity is measured against the final canvas and tones).
+**Blocking Edges:** none. Blocked-by hero-thoughts/10, design-system-architecture/08 and design-system-architecture/09 are all `done`.
+**Blocks:** hero-thoughts/11 (home page fidelity is measured against the final canvas and tones).
 
 **Reference (behaviour only, never conventions):** `.scratch/hero-thoughts/new_vis.html`, `[data-theme="warm"]` custom properties (lines ~65–110) for the warm values, and the `.paper-grain` rules (lines ~135–150). The prototype's grain is a live `feTurbulence` SVG overlay; we are deliberately not doing that.
 

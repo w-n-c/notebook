@@ -13,7 +13,7 @@ Port what it *does*; write it in this repo's conventions (Svelte island, UI
 Adapter, tokens, `@layer components`, no viewport media queries, no prototype
 copy). The prototype is throwaway code: do not copy its structure.
 
-**Blocking Edges:** Blocked by browser-testing #01 for the motion leg's harness
+**Blocking Edges:** Blocked by browser-testing/01 for the motion leg's harness
 (if that has not landed, add the leg to `scripts/smoke.ts` as it stands).
 **Status:** `done`
 

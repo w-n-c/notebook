@@ -4,7 +4,7 @@
 
 **Priority:** high
 
-**Blocking Edges:** Blocked By paper-texture #01 (canvas, tones and grain must be final so this is measured against them).
+**Blocking Edges:** Blocked By paper-texture/01 (canvas, tones and grain must be final so this is measured against them).
 **Blocks:** None.
 
 **Reference (behaviour only, never conventions):** `.scratch/hero-thoughts/new_vis.html` — warm tokens and fonts (lines ~65–110), `.prompt-input-wrap`, `.prompt-submit-btn`, `.prompt-clear-btn` (lines ~386–465), `.speech-pointer .warm-pointer` (~512–525), `.mind-item` and `.mind-item-title` (~700–740), header and theme/`quick-chip` styles (~200–270; **do not port the theme switcher or the TRY chips**). Port what it looks like; write it in this repo's conventions (tokens, `@layer`, Adapters, recipes). Per #03, none of the prototype's architecture-voice filler (eyebrow, `at://` meta lines, `[SSR ·]` tags) is ported.

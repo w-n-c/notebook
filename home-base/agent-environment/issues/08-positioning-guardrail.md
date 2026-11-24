@@ -3,7 +3,7 @@
 **What to build:** once Imposter, Icon and `positioned` exist, no component needs
 `position:`. Rule id `positioning`, **empty allow-list**.
 
-**Blocking Edges:** Blocked by design-system-architecture #08.
+**Blocking Edges:** Blocked by design-system-architecture/08.
 **Status:** `done`
 
 **Acceptance Criteria:**

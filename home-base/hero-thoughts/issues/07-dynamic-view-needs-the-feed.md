@@ -9,8 +9,8 @@ Once data-feeds #01 lands, the ladder resolves against the real index and the vi
 route renders those records; the stream's cached entries are real entities with
 real URLs.
 
-**Blocking Edges:** Blocked by data-feeds #01.
-**Blocks:** hero #08 (the mobile composition is designed against real entries).
+**Blocking Edges:** Blocked by data-feeds/01.
+**Blocks:** hero-thoughts/08 (the mobile composition is designed against real entries).
 
 **Acceptance Criteria:**
 
@@ -27,4 +27,4 @@ real URLs.
 - [ ] Full gate green, `bun run smoke` green.
 
 **Status:** `open`
-**Blocked by:** hero-thoughts #10, design-system-architecture #08 and #09 (retro 2026-11)
+**Blocked by:** hero-thoughts/10, design-system-architecture/08, design-system-architecture/09 (retro 2026-11)

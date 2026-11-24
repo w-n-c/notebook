@@ -16,7 +16,7 @@ It owns the frame loop, the measurement, the pointer/focus pause and the wheel.
 stays in `HeroSearch.svelte` (it styles elements `HeroSearch` owns).
 
 **Blocking Edges:** none.
-**Blocks:** agent-environment #03, hero-thoughts #07, #08.
+**Blocks:** agent-environment/03, hero-thoughts/07, hero-thoughts/08.
 **Status:** `done`
 
 **Acceptance Criteria:**

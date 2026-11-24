@@ -27,7 +27,7 @@ theme would still want it. Anything tied to this site's look stays in
 `src/styles/` `@layer utilities`.
 
 **Blocking Edges:** none.
-**Blocks:** hero-thoughts #07, #08, data-feeds #02, paper-texture #01.
+**Blocks:** hero-thoughts/07, hero-thoughts/08, data-feeds/02, paper-texture/01.
 **Status:** `done` — decided in the 2026-11-21 grilling session; recorded in
 `docs/adr/0012-shared-visual-recipes.md`.
 

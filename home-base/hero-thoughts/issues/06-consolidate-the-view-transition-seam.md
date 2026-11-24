@@ -25,9 +25,10 @@ Today the same three pieces are spread across `src/components/HeroSearch.svelte`
 scripts, and the service-worker registration), which is the divergent change the
 review flagged: the layout should compose, not implement.
 
-**Blocking Edges:** Blocks hero #08 (mobile) and anything that adds a destination
-or a new navigation affordance. **Blocked by** code-organisation #04 (hero
-Region) and #05 (shell Region): the new files are created at their final paths.
+**Blocking Edges:** Blocks hero-thoughts/08 (mobile) and anything that adds a destination
+or a new navigation affordance.
+**Blocked by:** code-organisation/04, code-organisation/05
+(hero and shell Regions: the new files are created at their final paths).
 **Status:** `open` — grilled 2026-11-24; decisions below, ready to implement.
 
 ## Decisions (grilling session)

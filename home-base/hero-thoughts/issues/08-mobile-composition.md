@@ -11,9 +11,9 @@ Silhouette's role changes between the two layouts (a boundary between two
 columns → something else entirely when there is only one column), and ADR 0010
 says the stream lives "behind the head", which a vertical stack cannot express.
 
-**Blocking Edges:** Blocked by hero #06 (the motion seam, so the layout rules and
-the play targets agree) and data-feeds #01 through hero #07 (the composition is
-designed against real entries, not four placeholder chips).
+**Blocking Edges:** Blocked by hero-thoughts/06 (the motion seam, so the layout
+rules and the play targets agree) and data-feeds/01 through hero-thoughts/07 (the
+composition is designed against real entries, not four placeholder chips).
 
 **Acceptance Criteria (draft — to be settled in the grilling session):**
 
@@ -31,7 +31,7 @@ designed against real entries, not four placeholder chips).
 - [ ] Contrast and axe stay green at the narrow size.
 
 **Status:** `open` — **needs a grilling session with the UI docs open.**
-**Blocked by:** hero-thoughts #10, design-system-architecture #08 and #09 (retro 2026-11)
+**Blocked by:** hero-thoughts/10, design-system-architecture/08, design-system-architecture/09 (retro 2026-11)
 
 **Questions for the grilling session:**
 

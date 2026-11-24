@@ -7,7 +7,7 @@ stops warning; a 600-line file that is half comments does too. See ADR 0013
 decision 9.
 
 **Blocked by:** None (can start immediately).
-**Status:** `open`
+**Status:** `done` — 2026-11-24; see the notes at the end.
 
 **Acceptance Criteria:**
 
@@ -25,3 +25,14 @@ decision 9.
 - [ ] No doc under `docs/agents/`, `CODING_STANDARDS.md` or `AGENTS.md` still states
       the old 300/600 thresholds: `rg -n '\b(300|600)\b.{0,20}lines|lines.{0,20}\b(300|600)\b' docs/agents CODING_STANDARDS.md AGENTS.md` returns **0** hits.
 - [ ] The live-tree scan in `bun test` passes on the real tree.
+
+**Notes (implementation):**
+
+- `HeroSearch.svelte` measures **382** code lines (589 raw) with the new counter,
+  not the 417 the ticket estimated; either way it is under 450 and silent.
+- The `bun scripts/check-guardrails.ts` observation is a test instead: that
+  adapter only reads *staged* files, and an unchanged `HeroSearch.svelte` cannot
+  be staged. `tests/guardrails.test.ts` reads the real file and asserts 0
+  violations, and a scan of all **62** template files in `src/` and `packages/`
+  found **0** `file-size` violations, so the raised tiers silence nothing real.
+- `countLines` is gone (it had no other caller); `countCodeLines` replaces it.

@@ -7,7 +7,7 @@ every rule in it is enforced only by a reviewer reading a diff, which is how a
 `scripts/lib/guardrails.ts` (unit-tested in `tests/guardrails.test.ts`, wired into
 the pre-commit scan). Rules that need judgement stay in the doc, labelled as such.
 
-**Blocking Edges:** Blocks every further UI ticket (hero #08, #09).
+**Blocking Edges:** Blocks every further UI ticket (hero-thoughts/08, hero-thoughts/09).
 **Status:** `open`
 
 **Steps for the implementing agent:**
