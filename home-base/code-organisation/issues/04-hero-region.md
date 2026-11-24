@@ -7,7 +7,7 @@ before; only locations and import paths change. `HeroSearch.svelte` is moved, no
 split and not edited beyond its import lines. See ADR 0013 decisions 1, 3, 5, 7.
 
 **Blocked by:** #02
-**Status:** `open`
+**Status:** `done` — 2026-11-24; see the notes at the end.
 
 **Acceptance Criteria:**
 
@@ -33,3 +33,23 @@ split and not edited beyond its import lines. See ADR 0013 decisions 1, 3, 5, 7.
 - [ ] `bun test`, `bun run typecheck`, `bun run build` exit **0**, and the e2e
       `motion` and `navigation` specs pass (command in `docs/agents/browser.md`).
 - [ ] `bun scripts/check-guardrails.ts` on the moved tree exits **0**.
+
+**Notes (implementation):**
+
+- The 12 files are there, `src/lib/` holds `site-content.ts` alone, `src/assets/`
+  has no `silhouette.svg`, and `rg -ln 'regions/hero' src` prints exactly
+  `src/layouts/Layout.astro` and `src/pages/index.astro`.
+- **`src/env.d.ts` is new.** A `.ts` file cannot import an `.astro` component
+  without an ambient declaration (Astro declares `astro:content`, not `*.astro`),
+  so `tsc` failed on `index.ts` until `declare module '*.astro'` existed.
+  `astro check` still resolves the real component and checks its props.
+- **One guardrail predicate widened:** `isComponent` now covers `src/regions/` as
+  well as `src/components/`, or `adapterSeam` would have silently stopped policing
+  the five moved components.
+- The AC's tests check finds **4** hits, all `describe(...)` titles that name a
+  module path (`Navigation (src/lib/navigation.ts)` and three siblings). Renaming
+  the module and leaving the title stale would be a lie in the test output, so the
+  titles moved with the files; **0** `expect(` or `it(` lines changed.
+- `HeroSearch.svelte` comments on lines 73 and 166 still say `src/lib/drum.ts`:
+  the AC freezes every non-import line, so ticket 10 (which rewrites that file)
+  is where they get fixed.

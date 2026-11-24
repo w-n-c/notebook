@@ -7,7 +7,7 @@ composition with no `<style>` block, and both components carry one. The rendered
 site is unchanged. See ADR 0013 decisions 5 and 6.
 
 **Blocked by:** #04
-**Status:** `open`
+**Status:** `done` — 2026-11-24.
 
 **Acceptance Criteria:**
 
@@ -25,3 +25,13 @@ site is unchanged. See ADR 0013 decisions 5 and 6.
       moved files are legal outside `src/layouts/`).
 - [ ] `bun test`, `bun run typecheck`, `bun run build` exit **0**, and the e2e
       `navigation` spec passes.
+
+**Notes (implementation):**
+
+- `src/regions/shell/` holds the 3 files; `index.ts` exports `SiteHeader` alone.
+  `SiteNav` is not exported: nothing outside the Region places it, and the ADR's
+  rule is one public name per thing a page composes.
+- `SiteNav` imported `../lib/site-content`, which is now two levels up
+  (`../../lib/site-content`). That is the only line that changed besides the
+  `Layout.astro` import and the three test paths.
+- The AC's tests check finds **0** hits here — no test title named either file.

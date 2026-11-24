@@ -185,3 +185,11 @@ cleaning up. The adapters in `ui/` are shared for a different reason: not
 because someone predicted reuse, but because guardrails and ADRs
 already hold that path in place. A prediction is free to make and impossible to
 check. A guardrail is neither.
+
+---
+
+A placement page is cheap to write and expensive to skip. The rule already lived
+in an ADR, and the guardrails already refused the wrong import — so a file could
+be rejected for living in the wrong folder by a rule whose reasoning only existed
+three directories away, in a document nobody had a reason to open. Enforcement
+without a sentence an agent will read is a wall with no sign on it.
