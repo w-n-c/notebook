@@ -57,7 +57,7 @@ built honestly.
 
 ## Source of truth
 
-The PDS is the permanent home for entity records, in community lexicons: Bookhive
+The PDS is the permanent home for entity records (ADR 0014), in community lexicons: Bookhive
 (books), Popfeed `review` (films), teal.fm `fm.teal.feed.play` (music). Ticket 01
 builds the index and adapter seam with fixtures only; ticket 04 is the PDS
 adapter. Raw exports never enter git (Letterboxd's `profile.csv` carries email,

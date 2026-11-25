@@ -20,6 +20,14 @@ waits on it).
 - [ ] An index module exposes a small interface — at minimum
       `entities()`, `byTerm(term)`, `adjacent(entity)` — and the resolution
       ladder plus the thought stream read *it* rather than `seedCatalog`.
+- [ ] An entity's terms are its lowercased title, tags, genres and creator (author or
+      main credit). `byTerm("dune")` returns the entity titled "Dune", and `byTerm`
+      of a tag returns every entity carrying it (fixture test); a prompt equal to a
+      term still scores 1 in `resolvePrompt` and resolves `dynamic`.
+- [ ] `adjacent(entity)` returns only entities sharing at least 1 term, never the
+      entity itself and never one absent from the index, sorted by shared-term
+      count descending then title ascending (fixture of 5 entities with the
+      expected order asserted). Semantic neighbours belong to hybrid-search.
 - [ ] Notes and projects are indexed from the content collections (no hand-kept
       list), so adding a note makes it answerable with no other edit.
 - [ ] The adapter interface is `load(): Promise<EntityRecord[]>`. A fixture adapter
