@@ -193,3 +193,13 @@ in an ADR, and the guardrails already refused the wrong import — so a file cou
 be rejected for living in the wrong folder by a rule whose reasoning only existed
 three directories away, in a document nobody had a reason to open. Enforcement
 without a sentence an agent will read is a wall with no sign on it.
+
+---
+
+The accent was terracotta, and terracotta is fine until you notice what it is
+doing on a page that also has buttons: the second colour on a screen is read as
+"this is the one that does the damage". Nobody chose cancel-red; it arrived by
+being warm, and warm turned out to be a neighbourhood. Retuning it to ink violet
+was a one-line edit and four documents. The colour was the easy part. The hard
+part was realising that the loudest thing after the ink is less a decoration
+than a claim about what the interface is for.
