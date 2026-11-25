@@ -22,9 +22,10 @@ waits on it).
       ladder plus the thought stream read *it* rather than `seedCatalog`.
 - [ ] Notes and projects are indexed from the content collections (no hand-kept
       list), so adding a note makes it answerable with no other edit.
-- [ ] At least one external feed adapter lands behind the same interface, and a
-      failing feed is a build-time error with the source named, never a silently
-      empty index.
+- [ ] The adapter interface is `load(): Promise<EntityRecord[]>`. A fixture adapter
+      proves a new source needs no index change, and a fixture adapter that throws
+      is a build-time error naming the source, never a silently empty index. The
+      real PDS adapter is data-feeds/04 (needs no PDS to finish this ticket).
 - [ ] The index is produced by the build (JSON or a content collection); the
       ladder stays synchronous and testable without I/O, and the hero still works
       with JS disabled and offline.

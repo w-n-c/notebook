@@ -50,3 +50,21 @@ built honestly.
 | 01 | Index & Feed Ingestion | open |
 | 02 | Dynamic View Renders the Index | open (blocked by 01) |
 | 03 | Assembled View from Real Adjacency | backlog |
+| 04 | PDS Adapter | open (blocked by 01, hosting/01) |
+| 05 | Import Letterboxd and StoryGraph into the PDS | open (blocked by hosting/01) |
+| 06 | Add Watch/Read Items from the Site | open (blocked by hosting/01, 04, site deployed) |
+| 07 | Deezer Inbound Sync | backlog (blocked by hosting/01, first edition live) |
+
+## Source of truth
+
+The PDS is the permanent home for entity records, in community lexicons: Bookhive
+(books), Popfeed `review` (films), teal.fm `fm.teal.feed.play` (music). Ticket 01
+builds the index and adapter seam with fixtures only; ticket 04 is the PDS
+adapter. Raw exports never enter git (Letterboxd's `profile.csv` carries email,
+name and location); the repo may be open-sourced later.
+
+## Non-goals
+
+- **No outbound sync to Letterboxd or StoryGraph.** StoryGraph is dropped (no
+  API). Letterboxd has no personal write API, and a headless logged-in client
+  conflicts with its Terms §6.11 (automated access). Both become one-time imports.

@@ -27,4 +27,4 @@ real URLs.
 - [ ] Full gate green, `bun run smoke` green.
 
 **Status:** `open`
-**Blocked by:** data-feeds/01
+**Blocked by:** data-feeds/01, site-foundations/05

@@ -31,7 +31,7 @@ composition is designed against real entries, not four placeholder chips).
 - [ ] Contrast and axe stay green at the narrow size.
 
 **Status:** `open` — **needs a grilling session with the UI docs open.**
-**Blocked by:** data-feeds/01, hero-thoughts/06, hero-thoughts/07
+**Blocked by:** data-feeds/01, data-feeds/04, data-feeds/05, hero-thoughts/06, hero-thoughts/07, site-foundations/05
 
 **Questions for the grilling session:**
 
